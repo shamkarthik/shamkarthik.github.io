@@ -1,8 +1,10 @@
-# Portfolio — Sham Karthik S
+# shamkarthik.github.io
 
-Senior AI/ML Engineer portfolio built with React 19 + Vite + Tailwind CSS v4.
+Personal portfolio — Sham Karthik S · Senior AI/ML Engineer
 
-**Live:** [shamkarthik.github.io/portfolio](https://shamkarthik.github.io/portfolio/)
+Built with React 19 + Vite + Tailwind CSS v4.
+
+**Live at [shamkarthik.github.io](https://shamkarthik.github.io)**
 
 ---
 
@@ -38,7 +40,7 @@ Senior AI/ML Engineer portfolio built with React 19 + Vite + Tailwind CSS v4.
 
 ```bash
 npm install
-npm run dev        # local dev at http://localhost:5173/portfolio/
+npm run dev        # local dev at http://localhost:5173/
 npm run build      # production build → dist/
 npm run preview    # preview build
 ```
