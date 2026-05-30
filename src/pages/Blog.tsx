@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { motion } from "framer-motion"
 
 interface Article {
@@ -16,6 +16,17 @@ export default function Blog() {
   const [tab, setTab] = useState<Tab>("medium")
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true)
+  const badgeLoaded = useRef(false)
+
+  useEffect(() => {
+    if (tab !== "linkedin" || badgeLoaded.current) return
+    badgeLoaded.current = true
+    const s = document.createElement("script")
+    s.src = "https://platform.linkedin.com/badges/js/profile.js"
+    s.async = true
+    s.defer = true
+    document.body.appendChild(s)
+  }, [tab])
 
   useEffect(() => {
     if (tab !== "medium") return
@@ -152,22 +163,31 @@ export default function Blog() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <div className="rounded-xl border border-card bg-card p-8 text-center">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-neon-blue/10">
-                  <svg className="h-10 w-10 text-neon-blue" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              <div className="rounded-xl border border-card bg-card p-6">
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-neon-blue/10">
+                    <svg className="h-7 w-7 text-neon-blue" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary">LinkedIn Activity</h3>
+                    <p className="text-sm text-muted">Sham Karthik S · Senior AI/ML Engineer</p>
+                  </div>
                 </div>
-                <h3 className="mb-2 text-lg font-semibold text-primary">LinkedIn Activity</h3>
-                <p className="mb-6 text-sm text-secondary">
-                  LinkedIn doesn't offer a public feed embed. Visit Sham's LinkedIn profile to see his latest posts and activity.
-                </p>
-                <a
-                  href="https://www.linkedin.com/in/sham-karthik-s/recent-activity/"
-                  target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg bg-neon-blue px-6 py-3 text-sm font-medium text-black transition-all duration-200 hover:bg-neon-blue/90 hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]"
-                >
-                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                  View LinkedIn Activity
-                </a>
+
+                <div className="mb-6 flex justify-center">
+                  <div className="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="HORIZONTAL" data-vanity="sham-karthik-s" data-version="v1" />
+                </div>
+
+                <div className="text-center">
+                  <a
+                    href="https://www.linkedin.com/in/sham-karthik-s/recent-activity/"
+                    target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-neon-blue px-6 py-3 text-sm font-medium text-black transition-all duration-200 hover:bg-neon-blue/90 hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]"
+                  >
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    View LinkedIn Activity
+                  </a>
+                </div>
               </div>
             </motion.div>
           )}
