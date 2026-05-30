@@ -74,6 +74,7 @@ export default function ChatPopup() {
   const [input, setInput] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
   const wllamaRef = useRef<Wllama | null>(null)
+  const configRef = useRef({ max_tokens: 4096 })
   const abortRef = useRef<AbortController | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -86,9 +87,21 @@ export default function ChatPopup() {
     ;(async () => {
       try {
         const wllama = new Wllama({ default: WLLAMA_CDN })
+
+        const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent)
+        const cores = navigator.hardwareConcurrency || 4
+        const mem = (navigator as any).deviceMemory || (isMobile ? 4 : 8)
+        const highEnd = mem >= 8 && cores >= 6 && !isMobile
+
+        const n_ctx = highEnd ? 8192 : 4096
+        const max_tokens = highEnd ? 4096 : 2048
+        const n_threads = highEnd ? Math.min(cores, 8) : Math.min(cores, 4)
+        configRef.current = { max_tokens }
+
         await wllama.loadModelFromUrl(MODEL_URL, {
-          n_batch: 512,
-          n_ctx: 512,
+          n_batch: Math.min(n_ctx, 1024),
+          n_ctx,
+          n_threads,
           progressCallback: (p) => {
             if (!cancelled) {
               const pct = Math.round((p.loaded / p.total) * 100)
@@ -150,7 +163,7 @@ export default function ChatPopup() {
 
       const stream = await wllamaRef.current!.createChatCompletion({
         messages: history as any,
-        max_tokens: 256,
+        max_tokens: configRef.current.max_tokens,
         temperature: 0.3,
         cache_prompt: true,
         stream: true,
