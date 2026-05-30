@@ -3,7 +3,7 @@ import { experiences } from "../data/experience"
 
 export default function Timeline() {
   return (
-    <section id="experience" className="py-24">
+    <section id="experience" className="py-16 md:py-24">
       <div className="mx-auto max-w-4xl px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -11,7 +11,7 @@ export default function Timeline() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
+          <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-6xl">
             Experience <span className="text-gradient">Timeline</span>
           </h2>
           <p className="mb-12 text-lg text-secondary">My professional journey</p>

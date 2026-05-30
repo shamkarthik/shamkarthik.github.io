@@ -37,7 +37,7 @@ export default function Home() {
       <Hero />
       <Timeline />
 
-      <section className="py-24">
+      <section className="py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -45,7 +45,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
+            <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-6xl">
               Open Source & <span className="text-gradient">Projects</span>
             </h2>
             <p className="mb-12 text-lg text-secondary">Things I've built and shared</p>
@@ -83,7 +83,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -91,7 +91,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
+            <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-6xl">
               AIGronomist <span className="text-gradient">Features</span>
             </h2>
             <p className="mb-2 text-secondary">On-Device Edge AI Mobile App — Tiger Analytics</p>
@@ -121,7 +121,7 @@ export default function Home() {
             </div>
             <div className="rounded-xl border border-card bg-card p-5">
               <h4 className="mb-4 text-sm font-semibold text-secondary">Impact Metrics</h4>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {[
                   { label: "Cloud Dependency", value: "100%", sub: "Reduction", color: "text-neon-green" },
                   { label: "App Responsiveness", value: "30%", sub: "Improvement", color: "text-neon-blue" },
@@ -129,7 +129,7 @@ export default function Home() {
                   { label: "Inference Accuracy", value: "95%", sub: "Detection Rate", color: "text-neon-green" },
                 ].map((m) => (
                   <div key={m.label} className="rounded-lg bg-hover p-4 text-center">
-                    <p className={`text-xl font-bold ${m.color}`}>{m.value}</p>
+                    <p className={`text-lg font-bold sm:text-xl ${m.color}`}>{m.value}</p>
                     <p className="mt-0.5 text-xs text-muted">{m.sub}</p>
                     <p className="text-[10px] text-muted">{m.label}</p>
                   </div>

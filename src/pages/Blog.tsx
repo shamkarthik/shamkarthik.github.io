@@ -33,7 +33,7 @@ export default function Blog() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
+            <h1 className="mb-2 text-4xl font-bold tracking-tight sm:text-6xl">
               Blog & <span className="text-gradient">Articles</span>
             </h1>
             <p className="mb-12 text-lg text-secondary">My writings on Medium about tech, AI, and privacy</p>

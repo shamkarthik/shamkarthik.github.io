@@ -28,13 +28,13 @@ export default function Contributions() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl lg:text-6xl">
+            <h1 className="mb-2 text-4xl font-bold tracking-tight sm:text-6xl lg:text-6xl">
               GitHub <span className="text-gradient">Contributions</span>
             </h1>
             <p className="mb-12 text-lg text-secondary">84 contributions in the last year · 26 repositories</p>
           </motion.div>
 
-          <div className="mb-8 grid gap-4 sm:grid-cols-4">
+          <div className="mb-8 grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-4">
             {[
               { label: "Total Repos", value: "26", color: "text-neon-blue", desc: "Public repositories" },
               { label: "Stars Earned", value: "8", color: "text-yellow-500", desc: "Across all repos" },

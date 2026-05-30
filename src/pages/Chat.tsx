@@ -119,7 +119,7 @@ export default function Chat() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
+            <h1 className="mb-2 text-4xl font-bold tracking-tight sm:text-6xl">
               AI <span className="text-gradient">Chat</span>
             </h1>
             <p className="mb-8 text-lg text-secondary">On-device LLM powered by WebLLM — runs entirely in your browser.</p>
@@ -154,7 +154,7 @@ export default function Chat() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex h-[500px] flex-col rounded-xl border border-card bg-card"
+              className="flex h-[65vh] min-h-[350px] flex-col rounded-xl border border-card bg-card"
             >
               <div className="flex items-center justify-between border-b border-card px-4 py-3">
                 <span className="text-xs font-medium text-secondary">Llama-3.2-1B · <span className="text-neon-green">Active</span></span>

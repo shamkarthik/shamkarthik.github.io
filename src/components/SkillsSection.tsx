@@ -4,7 +4,7 @@ import SkillBars from "./SkillBars"
 
 export default function SkillsSection() {
   return (
-    <section id="skills" className="py-24">
+    <section id="skills" className="py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -12,7 +12,7 @@ export default function SkillsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
+          <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-6xl">
             Technical <span className="text-gradient">Skills</span>
           </h2>
           <p className="mb-12 text-lg text-secondary">Technologies I work with daily</p>
@@ -24,7 +24,7 @@ export default function SkillsSection() {
             <SkillBars />
           </div>
           <div className="lg:col-span-3">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {Object.entries(skills).map(([category, items], ci) => (
                 <motion.div
                   key={category}
@@ -48,7 +48,7 @@ export default function SkillsSection() {
           </div>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <h3 className="mb-4 text-lg font-semibold text-secondary">Certifications</h3>
             <div className="space-y-3">
