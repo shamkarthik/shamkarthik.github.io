@@ -85,18 +85,18 @@ export default function ServiceCards() {
         </div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="mt-10 text-center"
+          className="mt-12 text-center"
         >
-          <div className="inline-flex items-center gap-3 rounded-xl border border-card bg-card px-6 py-4 text-sm italic text-muted">
-            <svg className="h-5 w-5 flex-shrink-0 text-neon-green" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311C9.591 11.69 11 13.166 11 15c0 1.933-1.567 3.5-3.5 3.5-1.271 0-2.403-.634-2.917-1.179zM17.583 17.321C16.553 16.227 16 15 16 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311C22.591 11.69 24 13.166 24 15c0 1.933-1.567 3.5-3.5 3.5-1.271 0-2.403-.634-2.917-1.179z"/>
+          <div className="inline-flex items-center gap-3 rounded-xl border border-neon-blue/20 bg-gradient-to-r from-neon-blue/5 via-transparent to-neon-purple/5 px-8 py-5 text-base italic shadow-[0_0_30px_rgba(0,212,255,0.08)]">
+            <svg className="h-6 w-6 flex-shrink-0 text-neon-blue" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M13 2L4.093 12.687a.75.75 0 00.553 1.313H12l-1 8 8.907-10.687A.75.75 0 0019.354 10H12l1-8z"/>
             </svg>
-            <span>
-              "Run, Barry. Run." — <strong className="text-primary not-italic">That's the energy I bring to every project.</strong>
+            <span className="text-primary">
+              "Run, Barry. Run." — <strong className="text-neon-blue not-italic">That's the energy I bring to every project.</strong>
             </span>
           </div>
         </motion.div>

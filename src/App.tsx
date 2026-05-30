@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import ScrollToTop from "./components/ScrollToTop"
-import ChatPopup from "./components/ChatPopup"
 import ElectricEffect from "./components/ElectricEffect"
 import Home from "./pages/Home"
 import Blog from "./pages/Blog"
@@ -23,7 +22,6 @@ export default function App() {
         </Routes>
       </main>
       <ScrollToTop />
-      <ChatPopup />
       <Footer />
     </div>
   )

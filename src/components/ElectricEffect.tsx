@@ -1,12 +1,14 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface Point { x: number; y: number }
+interface Bolt { pts: Point[]; branches: Point[][]; life: number; maxLife: number }
+interface Spark { x: number; y: number; vx: number; vy: number; life: number; maxLife: number }
 
 function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
 
-function boltPoints(from: Point, to: Point, detail: number): Point[] {
+function boltPath(from: Point, to: Point, detail: number): Point[] {
   const pts: Point[] = [from]
-  const segs = 8 + Math.floor(Math.random() * 6)
+  const segs = 6 + Math.floor(Math.random() * 5)
   for (let i = 1; i < segs; i++) {
     const t = i / segs
     const x = lerp(from.x, to.x, t) + (Math.random() - 0.5) * detail
@@ -17,20 +19,105 @@ function boltPoints(from: Point, to: Point, detail: number): Point[] {
   return pts
 }
 
-interface Spark {
-  x: number; y: number; vx: number; vy: number; life: number; maxLife: number
+function makeBranches(main: Point[], detail: number): Point[][] {
+  const branches: Point[][] = []
+  const count = 2 + Math.floor(Math.random() * 3)
+  for (let i = 0; i < count; i++) {
+    const segIdx = Math.floor(Math.random() * (main.length - 1))
+    const a = main[segIdx], b = main[segIdx + 1]
+    const t = 0.3 + Math.random() * 0.4
+    const origin = { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) }
+    const dx = b.x - a.x, dy = b.y - a.y
+    const len = Math.sqrt(dx * dx + dy * dy) || 1
+    const nx = -dy / len, ny = dx / len
+    const side = Math.random() > 0.5 ? 1 : -1
+    const angle = Math.atan2(ny * side, nx * side) + (Math.random() - 0.5) * 1.2
+    const branchLen = 20 + Math.random() * 60
+    const end = {
+      x: origin.x + Math.cos(angle) * branchLen,
+      y: origin.y + Math.sin(angle) * branchLen,
+    }
+    branches.push(boltPath(origin, end, detail * 0.4))
+  }
+  return branches
 }
 
-export default function ElectricEffect() {
+function getCardPositions(w: number, h: number): Point[] {
+  const pts: Point[] = []
+  const cards = document.querySelectorAll<HTMLElement>(
+    '[class*="card"], [class*="Card"], section, [class*="service"], article'
+  )
+  cards.forEach(el => {
+    const rect = el.getBoundingClientRect()
+    if (rect.width > 0 && rect.height > 0) {
+      pts.push({
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2 + 20,
+      })
+    }
+  })
+  if (pts.length === 0) {
+    pts.push({ x: w * 0.3, y: h * 0.5 })
+    pts.push({ x: w * 0.7, y: h * 0.5 })
+  }
+  return pts
+}
+
+function hasWebGPU(): boolean {
+  return 'gpu' in navigator && typeof navigator.gpu !== 'undefined'
+}
+
+function emitSparks(sparks: Spark[], x: number, y: number, count: number) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2
+    const speed = 1 + Math.random() * 3
+    sparks.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 1,
+      life: 0,
+      maxLife: 30 + Math.random() * 40,
+    })
+  }
+}
+
+function drawBolt(
+  ctx: CanvasRenderingContext2D,
+  pts: Point[],
+  alpha: number,
+  glowW: number,
+) {
+  ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`
+  ctx.lineWidth = glowW
+  ctx.shadowColor = "rgba(0, 212, 255, 0.4)"
+  ctx.shadowBlur = 20
+  ctx.beginPath()
+  ctx.moveTo(pts[0].x, pts[0].y)
+  for (let j = 1; j < pts.length; j++) ctx.lineTo(pts[j].x, pts[j].y)
+  ctx.stroke()
+
+  ctx.strokeStyle = `rgba(180, 240, 255, ${alpha * 0.8})`
+  ctx.lineWidth = 2
+  ctx.shadowBlur = 0
+  ctx.beginPath()
+  ctx.moveTo(pts[0].x, pts[0].y)
+  for (let j = 1; j < pts.length; j++) ctx.lineTo(pts[j].x, pts[j].y)
+  ctx.stroke()
+}
+
+/** Full canvas lightning effect (works everywhere — canvas 2D, not WebGPU) */
+function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseRef = useRef({ x: -999, y: -999, active: false })
   const sparksRef = useRef<Spark[]>([])
-  const boltsRef = useRef<{ pts: Point[]; life: number; maxLife: number }[]>([])
+  const boltsRef = useRef<Bolt[]>([])
   const timeRef = useRef(0)
+  const cardOriginsRef = useRef<Point[]>([])
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
+    onRef(canvas)
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
@@ -48,54 +135,70 @@ export default function ElectricEffect() {
       mouseRef.current = { x: e.clientX, y: e.clientY, active: true }
     }
     const onLeave = () => { mouseRef.current.active = false }
+
     window.addEventListener("mousemove", onMouse)
     window.addEventListener("mouseleave", onLeave)
+
+    const onClick = (e: MouseEvent) => {
+      const cx = e.clientX, cy = e.clientY
+      const top = { x: cx + (Math.random() - 0.5) * 200, y: cy - 200 - Math.random() * 200 }
+      const main = boltPath({ x: cx, y: cy }, top, 100 + Math.random() * 60)
+      boltsRef.current.push({
+        pts: main,
+        branches: makeBranches(main, 100),
+        life: 0,
+        maxLife: 0.8 + Math.random() * 0.4,
+      })
+      emitSparks(sparksRef.current, cx, cy, 12)
+    }
+    window.addEventListener("click", onClick)
 
     let scrollY = 0
     const onScroll = () => {
       const sy = window.scrollY
-      const intensity = Math.min(sy / 400, 1)
-      if (sy - scrollY > 100 && intensity > 0.3) {
-        const from = { x: Math.random() * w, y: 0 }
-        const to = { x: from.x + (Math.random() - 0.5) * 400, y: Math.random() * h * 0.6 }
-        boltsRef.current.push({
-          pts: boltPoints(from, to, 80 + Math.random() * 60),
-          life: 0,
-          maxLife: 0.3 + Math.random() * 0.2,
-        })
+      if (sy - scrollY > 150) {
+        const origins = getCardPositions(w, h)
+        if (origins.length > 0) {
+          const origin = origins[Math.floor(Math.random() * origins.length)]
+          const top = {
+            x: origin.x + (Math.random() - 0.5) * 150,
+            y: origin.y - 80 - Math.random() * 150,
+          }
+          const main = boltPath(origin, top, 60 + Math.random() * 40)
+          boltsRef.current.push({
+            pts: main,
+            branches: makeBranches(main, 60),
+            life: 0,
+            maxLife: 0.8 + Math.random() * 0.3,
+          })
+          emitSparks(sparksRef.current, origin.x, origin.y, 6)
+        }
       }
       scrollY = sy
     }
     window.addEventListener("scroll", onScroll, { passive: true })
 
-    function emitSparks(x: number, y: number, count: number) {
-      for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2
-        const speed = 1 + Math.random() * 3
-        sparksRef.current.push({
-          x, y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 1,
+    function spawnNaturalBolt() {
+      const origins = getCardPositions(w, h)
+      if (origins.length > 0) {
+        const origin = origins[Math.floor(Math.random() * origins.length)]
+        const upward = Math.random() > 0.5
+        const target = upward
+          ? { x: origin.x + (Math.random() - 0.5) * 200, y: origin.y - 100 - Math.random() * 200 }
+          : { x: origin.x + (Math.random() - 0.5) * 200, y: origin.y + 100 + Math.random() * 200 }
+        const main = boltPath(upward ? origin : origin, upward ? target : target, 80 + Math.random() * 50)
+        boltsRef.current.push({
+          pts: main,
+          branches: makeBranches(main, 80),
           life: 0,
-          maxLife: 20 + Math.random() * 30,
+          maxLife: 0.7 + Math.random() * 0.3,
         })
+        emitSparks(sparksRef.current, origin.x, origin.y, 4)
       }
-    }
-
-    function spawnBolt() {
-      const from = { x: Math.random() * w, y: Math.random() * h * 0.3 }
-      const to = {
-        x: from.x + (Math.random() - 0.5) * 500,
-        y: from.y + 100 + Math.random() * 300,
-      }
-      boltsRef.current.push({
-        pts: boltPoints(from, to, 40 + Math.random() * 40),
-        life: 0,
-        maxLife: 0.15 + Math.random() * 0.15,
-      })
     }
 
     let boltTimer = 0
+    let cardRefreshTimer = 0
 
     function draw(t: number) {
       animId = requestAnimationFrame(draw)
@@ -104,74 +207,64 @@ export default function ElectricEffect() {
 
       ctx!.clearRect(0, 0, w, h)
 
-      // ambient energy glow at mouse
+      // ambient glow at mouse
       if (mouseRef.current.active) {
         const g = ctx!.createRadialGradient(
           mouseRef.current.x, mouseRef.current.y, 0,
-          mouseRef.current.x, mouseRef.current.y, 120,
+          mouseRef.current.x, mouseRef.current.y, 140,
         )
-        g.addColorStop(0, "rgba(0, 212, 255, 0.06)")
+        g.addColorStop(0, "rgba(0, 212, 255, 0.05)")
         g.addColorStop(1, "rgba(0, 212, 255, 0)")
         ctx!.fillStyle = g
         ctx!.fillRect(0, 0, w, h)
       }
 
-      // breathable ambient glow (slow pulse)
-      const pulse = 0.5 + 0.5 * Math.sin(t / 2000)
-      ctx!.fillStyle = `rgba(0, 212, 255, ${0.01 * pulse})`
+      // breathing ambient glow
+      const pulse = 0.5 + 0.5 * Math.sin(t / 2500)
+      ctx!.fillStyle = `rgba(0, 212, 255, ${0.008 * pulse})`
       ctx!.fillRect(0, 0, w, h)
 
-      // random lightning bolts
+      // natural bolts from content cards
       boltTimer += dt
-      if (boltTimer > 2 + Math.random() * 3) {
-        spawnBolt()
+      if (boltTimer > 3 + Math.random() * 4) {
+        spawnNaturalBolt()
         boltTimer = 0
       }
 
+      // refresh card origins periodically
+      cardRefreshTimer += dt
+      if (cardRefreshTimer > 2) {
+        cardOriginsRef.current = getCardPositions(w, h)
+        cardRefreshTimer = 0
+      }
+
       // draw bolts
-      for (let i = boltsRef.current.length - 1; i >= 0; i--) {
-        const b = boltsRef.current[i]
+      const bolts = boltsRef.current
+      for (let i = bolts.length - 1; i >= 0; i--) {
+        const b = bolts[i]
         b.life += dt
-        if (b.life >= b.maxLife) { boltsRef.current.splice(i, 1); continue }
+        if (b.life >= b.maxLife) { bolts.splice(i, 1); continue }
 
         const progress = b.life / b.maxLife
         const alpha = (1 - progress) * 0.7
-        const glowW = 6 + (1 - progress) * 12
+        const glowW = 5 + (1 - progress) * 12
 
-        ctx!.strokeStyle = `rgba(0, 212, 255, ${alpha})`
-        ctx!.lineWidth = glowW
-        ctx!.shadowColor = "rgba(0, 212, 255, 0.5)"
-        ctx!.shadowBlur = 20
-        ctx!.beginPath()
-        ctx!.moveTo(b.pts[0].x, b.pts[0].y)
-        for (let j = 1; j < b.pts.length; j++) {
-          ctx!.lineTo(b.pts[j].x, b.pts[j].y)
+        drawBolt(ctx!, b.pts, alpha, glowW)
+        for (const branch of b.branches) {
+          drawBolt(ctx!, branch, alpha * 0.6, glowW * 0.5)
         }
-        ctx!.stroke()
 
-        // inner bright core
-        ctx!.strokeStyle = `rgba(180, 240, 255, ${alpha * 0.8})`
-        ctx!.lineWidth = 2
-        ctx!.shadowBlur = 0
-        ctx!.beginPath()
-        ctx!.moveTo(b.pts[0].x, b.pts[0].y)
-        for (let j = 1; j < b.pts.length; j++) {
-          ctx!.lineTo(b.pts[j].x, b.pts[j].y)
-        }
-        ctx!.stroke()
-
-        // emit sparks at the end of the bolt
         if (progress < 0.3) {
-          emitSparks(b.pts[b.pts.length - 1].x, b.pts[b.pts.length - 1].y, 4)
+          emitSparks(sparksRef.current, b.pts[b.pts.length - 1].x, b.pts[b.pts.length - 1].y, 5)
         }
       }
 
-      // emit sparks at mouse
+      // mouse sparks
       if (mouseRef.current.active && Math.random() > 0.85) {
-        emitSparks(mouseRef.current.x, mouseRef.current.y, 2)
+        emitSparks(sparksRef.current, mouseRef.current.x, mouseRef.current.y, 2)
       }
 
-      // update & draw sparks
+      // draw sparks
       const sp = sparksRef.current
       for (let i = sp.length - 1; i >= 0; i--) {
         const s = sp[i]
@@ -180,14 +273,13 @@ export default function ElectricEffect() {
         s.x += s.vx
         s.y += s.vy
         s.vy += 0.05
-        const lifeRatio = s.life / s.maxLife
-        const alpha = (1 - lifeRatio) * 0.8
-
+        const lr = s.life / s.maxLife
+        const alpha = (1 - lr) * 0.8
         ctx!.fillStyle = `rgba(0, 212, 255, ${alpha})`
-        ctx!.shadowColor = "rgba(0, 212, 255, 0.6)"
-        ctx!.shadowBlur = 8
+        ctx!.shadowColor = "rgba(0, 212, 255, 0.5)"
+        ctx!.shadowBlur = 6
         ctx!.beginPath()
-        ctx!.arc(s.x, s.y, 1.5 * (1 - lifeRatio * 0.5), 0, Math.PI * 2)
+        ctx!.arc(s.x, s.y, 1.5 * (1 - lr * 0.5), 0, Math.PI * 2)
         ctx!.fill()
       }
       ctx!.shadowBlur = 0
@@ -200,9 +292,53 @@ export default function ElectricEffect() {
       window.removeEventListener("resize", resize)
       window.removeEventListener("mousemove", onMouse)
       window.removeEventListener("mouseleave", onLeave)
+      window.removeEventListener("click", onClick)
       window.removeEventListener("scroll", onScroll)
     }
+  }, [onRef])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 -z-10 pointer-events-none"
+    />
+  )
+}
+
+/** CSS-based fallback for non-WebGPU browsers */
+function CssFallback() {
+  return (
+    <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,212,255,0.03),transparent_60%)] animate-pulse" />
+      <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-neon-blue/5 to-transparent" style={{ animation: "electricFlicker 3s ease-in-out infinite" }} />
+      <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-neon-blue/5 to-transparent" style={{ animation: "electricFlicker 3s ease-in-out infinite 1.5s" }} />
+      <style>{`
+        @keyframes electricFlicker {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+          25%, 75% { opacity: 0.1; }
+        }
+      `}</style>
+    </div>
+  )
+}
+
+export default function ElectricEffect() {
+  const [webgpu, setWebgpu] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    setWebgpu(hasWebGPU())
   }, [])
 
-  return <canvas ref={canvasRef} className="fixed inset-0 -z-10 pointer-events-none" />
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+
+  if (webgpu === null) {
+    return <div className="fixed inset-0 -z-10 pointer-events-none" />
+  }
+
+  if (!webgpu) {
+    return <CssFallback />
+  }
+
+  return <CanvasLightning onRef={(el) => { canvasRef.current = el }} />
 }
