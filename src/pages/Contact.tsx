@@ -1,21 +1,6 @@
 import { motion } from "framer-motion"
-import { useRef } from "react"
 
 export default function Contact() {
-  const formRef = useRef<HTMLFormElement>(null)
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const form = e.currentTarget
-    const data = new FormData(form)
-    const name = data.get("name") as string
-    const email = data.get("email") as string
-    const subject = (data.get("subject") as string) || "Inquiry from your portfolio"
-    const message = data.get("message") as string
-
-    const body = `From: ${name} (${email})\n\n${message}`
-    window.location.href = `mailto:shamkarthik88@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-  }
   return (
     <div className="pt-24">
       <section className="py-12">
@@ -28,53 +13,36 @@ export default function Contact() {
             <h1 className="mb-2 text-4xl font-bold tracking-tight sm:text-6xl">
               Get in <span className="text-gradient">Touch</span>
             </h1>
-            <p className="mb-12 text-lg text-secondary">Have a question or want to collaborate?</p>
+            <p className="mb-8 text-lg text-secondary">Have a question or want to collaborate? Reach out directly.</p>
           </motion.div>
 
-          <motion.form
-            ref={formRef}
-            onSubmit={handleSubmit}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="space-y-4"
+            className="rounded-xl border border-card bg-card p-8 text-center"
           >
-            <div className="grid gap-4 sm:grid-cols-2">
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                required
-                className="w-full rounded-lg border border-card bg-card px-4 py-3 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                required
-                className="w-full rounded-lg border border-card bg-card px-4 py-3 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
-              />
+            <p className="mb-8 text-secondary">Feel free to DM me on LinkedIn or send an email — I usually respond within a day.</p>
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+              <a
+                href="mailto:shamkarthik88@gmail.com"
+                className="inline-flex items-center gap-3 rounded-lg bg-neon-blue px-8 py-4 font-medium text-black transition-all duration-200 hover:bg-neon-blue/90 hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Send an Email
+              </a>
+              <a
+                href="https://www.linkedin.com/in/sham-karthik-s/"
+                target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 rounded-lg border border-neon-blue/30 px-8 py-4 font-medium text-neon-blue transition-all duration-200 hover:bg-neon-blue/10"
+              >
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                DM on LinkedIn
+              </a>
             </div>
-            <input
-              type="text"
-              name="subject"
-              placeholder="Subject"
-              className="w-full rounded-lg border border-card bg-card px-4 py-3 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
-            />
-            <textarea
-              name="message"
-              placeholder="Your Message"
-              rows={5}
-              required
-              className="w-full resize-none rounded-lg border border-card bg-card px-4 py-3 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
-            />
-            <button
-              type="submit"
-              className="w-full rounded-lg bg-neon-blue px-6 py-3 font-medium text-black transition-all duration-200 hover:bg-neon-blue/90 hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]"
-            >
-              Send Message
-            </button>
-          </motion.form>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
