@@ -54,7 +54,7 @@ export default function Contact() {
               <p className="mb-4 text-sm text-secondary">View or download my resume to learn more about my experience.</p>
               <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <a
-                  href="/one_page.pdf"
+                  href="/ShamkarthikS.pdf"
                   target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-lg bg-neon-purple px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-neon-purple/90 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]"
                 >
@@ -65,7 +65,7 @@ export default function Contact() {
                   View Resume
                 </a>
                 <a
-                  href="/one_page.pdf"
+                  href="/ShamkarthikS.pdf"
                   download
                   className="inline-flex items-center gap-2 rounded-lg border border-neon-purple/30 px-6 py-3 text-sm font-medium text-neon-purple transition-all duration-200 hover:bg-neon-purple/10"
                 >
