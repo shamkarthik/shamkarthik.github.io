@@ -11,13 +11,13 @@ export default function Timeline() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="mb-2 text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
             Experience <span className="text-gradient">Timeline</span>
           </h2>
-          <p className="mb-12 text-gray-400">My professional journey</p>
+          <p className="mb-12 text-secondary text-base">My professional journey</p>
         </motion.div>
 
-        <div className="relative space-y-8 before:absolute before:left-[19px] before:top-2 before:h-[calc(100%-2rem)] before:w-[1px] before:bg-dark-border">
+        <div className="relative space-y-8 before:absolute before:left-[19px] before:top-2 before:h-[calc(100%-2rem)] before:w-[1px] before:bg-card">
           {experiences.map((exp, i) => (
             <motion.div
               key={exp.role}
@@ -27,23 +27,23 @@ export default function Timeline() {
               transition={{ delay: i * 0.15, duration: 0.4 }}
             >
               <div className="relative pl-12">
-                <div className="absolute left-2.5 top-2 z-10 h-[15px] w-[15px] rounded-full border-2 border-neon-blue bg-[#0a0a0f]" />
+                <div className="absolute left-2.5 top-2 z-10 h-[15px] w-[15px] rounded-full border-2 border-neon-blue bg-primary" />
 
                 <div className="mb-2">
-                  <h3 className="text-lg font-semibold text-white">{exp.role}</h3>
+                  <h3 className="text-lg font-semibold text-primary">{exp.role}</h3>
                   <div className="flex items-baseline gap-2">
                     <p className="text-sm text-neon-blue">{exp.company}</p>
-                    <span className="text-xs text-gray-600">· {exp.period}</span>
+                    <span className="text-xs text-muted">· {exp.period}</span>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   {exp.projects.map((proj) => (
-                    <div key={proj.name} className="rounded-xl border border-dark-border bg-dark-card p-5 transition-all duration-300 hover:border-neon-blue/30">
-                      <h4 className="mb-2 text-sm font-semibold text-gray-200">{proj.name}</h4>
+                    <div key={proj.name} className="rounded-xl border border-card bg-card p-5 transition-all duration-300 hover:border-neon-blue/30">
+                      <h4 className="mb-2 text-sm font-semibold text-secondary">{proj.name}</h4>
                       <ul className="mb-3 space-y-1.5">
                         {proj.highlights.map((h) => (
-                          <li key={h} className="text-sm leading-relaxed text-gray-400 before:mr-2 before:text-neon-blue before:content-['▹']">
+                          <li key={h} className="text-sm leading-relaxed text-secondary before:mr-2 before:text-neon-blue before:content-['▹']">
                             {h}
                           </li>
                         ))}
@@ -66,3 +66,7 @@ export default function Timeline() {
     </section>
   )
 }
+
+
+
+

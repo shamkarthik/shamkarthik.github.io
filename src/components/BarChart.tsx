@@ -14,15 +14,15 @@ export default function BarChart({ data, title, suffix = "" }: { data: BarItem[]
 
   return (
     <div ref={ref}>
-      {title && <h4 className="mb-4 text-sm font-semibold text-gray-300">{title}</h4>}
+      {title && <h4 className="mb-4 text-sm font-semibold text-secondary">{title}</h4>}
       <div className="space-y-3">
         {data.map((item) => (
           <div key={item.label}>
             <div className="mb-1 flex items-center justify-between text-xs">
-              <span className="text-gray-400">{item.label}</span>
-              <span className="text-gray-500">{item.value}{suffix}</span>
+              <span className="text-secondary">{item.label}</span>
+              <span className="text-muted">{item.value}{suffix}</span>
             </div>
-            <div className="relative h-5 overflow-hidden rounded-lg bg-dark-hover">
+            <div className="relative h-5 overflow-hidden rounded-lg bg-hover">
               <motion.div
                 initial={{ width: 0 }}
                 animate={inView ? { width: `${(item.value / max) * 100}%` } : {}}
@@ -38,3 +38,7 @@ export default function BarChart({ data, title, suffix = "" }: { data: BarItem[]
     </div>
   )
 }
+
+
+
+

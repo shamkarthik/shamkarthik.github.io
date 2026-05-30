@@ -45,10 +45,10 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="mb-2 text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
               Open Source & <span className="text-gradient">Projects</span>
             </h2>
-            <p className="mb-12 text-gray-400">Things I've built and shared</p>
+            <p className="mb-12 text-secondary text-base">Things I've built and shared</p>
           </motion.div>
 
           <div className="grid gap-6 sm:grid-cols-2">
@@ -62,17 +62,17 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.4 }}
-                className="group rounded-xl border border-dark-border bg-dark-card p-6 transition-all duration-300 hover:border-neon-blue/30"
+                className="group rounded-xl border border-card bg-card p-6 transition-all duration-300 hover:border-neon-blue/30"
               >
                 <div className="mb-3 flex items-center gap-2">
                   <span className="text-xs uppercase tracking-wider text-neon-purple">{p.type}</span>
-                  <span className="text-gray-600">·</span>
-                  <span className="text-xs text-gray-500">{p.title}</span>
+                  <span className="text-muted">·</span>
+                  <span className="text-xs text-muted">{p.title}</span>
                 </div>
-                <p className="mb-4 text-sm leading-relaxed text-gray-400">{p.description}</p>
+                <p className="mb-4 text-sm leading-relaxed text-secondary">{p.description}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {p.tech.map((t) => (
-                    <span key={t} className="rounded-md bg-dark-hover px-2 py-0.5 text-xs text-gray-500">
+                    <span key={t} className="rounded-md bg-hover px-2 py-0.5 text-xs text-muted">
                       {t}
                     </span>
                   ))}
@@ -91,11 +91,11 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="mb-2 text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
               AIGronomist <span className="text-gradient">Features</span>
             </h2>
-            <p className="mb-2 text-gray-300">On-Device Edge AI Mobile App — Tiger Analytics</p>
-            <p className="mb-8 text-sm text-gray-500">
+            <p className="mb-2 text-secondary">On-Device Edge AI Mobile App — Tiger Analytics</p>
+            <p className="mb-8 text-sm text-muted">
               46 features · Flutter · BLoC · ONNX · C++ FFI · Potato disease classification
             </p>
           </motion.div>
@@ -105,9 +105,9 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1, duration: 0.5 }}
-            className="mb-8 rounded-xl border border-dark-border bg-dark-card p-5"
+            className="mb-8 rounded-xl border border-card bg-card p-5"
           >
-            <p className="text-sm leading-relaxed text-gray-300">
+            <p className="text-sm leading-relaxed text-secondary">
               On-device CV system for potato disease classification using Vision-Language Models (VLM)
               and edge inference, reducing cloud dependency by <strong className="text-neon-green">100%</strong>.
               Custom Flutter FFI plugins, patched camera internals, and background sync with Dart isolates
@@ -116,11 +116,11 @@ export default function Home() {
           </motion.div>
 
           <div className="mb-8 grid gap-6 lg:grid-cols-2">
-            <div className="rounded-xl border border-dark-border bg-dark-card p-5">
+            <div className="rounded-xl border border-card bg-card p-5">
               <BarChart data={catBarData} title="Features by Category" suffix="" />
             </div>
-            <div className="rounded-xl border border-dark-border bg-dark-card p-5">
-              <h4 className="mb-4 text-sm font-semibold text-gray-300">Impact Metrics</h4>
+            <div className="rounded-xl border border-card bg-card p-5">
+              <h4 className="mb-4 text-sm font-semibold text-secondary">Impact Metrics</h4>
               <div className="grid grid-cols-2 gap-4">
                 {[
                   { label: "Cloud Dependency", value: "100%", sub: "Reduction", color: "text-neon-green" },
@@ -128,10 +128,10 @@ export default function Home() {
                   { label: "UI Implementation", value: "25%", sub: "Faster", color: "text-neon-purple" },
                   { label: "Inference Accuracy", value: "95%", sub: "Detection Rate", color: "text-neon-green" },
                 ].map((m) => (
-                  <div key={m.label} className="rounded-lg bg-dark-hover p-4 text-center">
+                  <div key={m.label} className="rounded-lg bg-hover p-4 text-center">
                     <p className={`text-xl font-bold ${m.color}`}>{m.value}</p>
-                    <p className="mt-0.5 text-xs text-gray-500">{m.sub}</p>
-                    <p className="text-[10px] text-gray-600">{m.label}</p>
+                    <p className="mt-0.5 text-xs text-muted">{m.sub}</p>
+                    <p className="text-[10px] text-muted">{m.label}</p>
                   </div>
                 ))}
               </div>
@@ -154,7 +154,7 @@ export default function Home() {
                 <button
                   onClick={() => setActiveCat(null)}
                   className={`rounded-lg border px-4 py-1.5 text-xs font-medium transition-all ${
-                    !activeCat ? "border-neon-blue bg-neon-blue/10 text-neon-blue" : "border-dark-border bg-dark-card text-gray-400 hover:text-white"
+                    !activeCat ? "border-neon-blue bg-neon-blue/10 text-neon-blue" : "border-card bg-card text-secondary hover:text-primary"
                   }`}
                 >
                   All
@@ -164,7 +164,7 @@ export default function Home() {
                     key={c}
                     onClick={() => setActiveCat(c)}
                     className={`rounded-lg border px-4 py-1.5 text-xs font-medium transition-all ${
-                      activeCat === c ? "border-neon-blue bg-neon-blue/10 text-neon-blue" : "border-dark-border bg-dark-card text-gray-400 hover:text-white"
+                      activeCat === c ? "border-neon-blue bg-neon-blue/10 text-neon-blue" : "border-card bg-card text-secondary hover:text-primary"
                     }`}
                   >
                     {c}
@@ -179,24 +179,24 @@ export default function Home() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05, duration: 0.3 }}
-                    className="rounded-xl border border-dark-border bg-dark-card p-5 transition-all duration-300 hover:border-neon-blue/30"
+                    className="rounded-xl border border-card bg-card p-5 transition-all duration-300 hover:border-neon-blue/30"
                   >
                     <div className="mb-3 flex items-center justify-between">
                       <span className={`rounded-md border px-2.5 py-0.5 text-xs font-medium ${categoryColors[f.category] || ""}`}>
                         {f.category}
                       </span>
-                      <span className="text-xs text-gray-600">#{f.id}</span>
+                      <span className="text-xs text-muted">#{f.id}</span>
                     </div>
-                    <h3 className="mb-2 text-sm font-semibold text-white">{f.title}</h3>
-                    <p className="mb-2 text-xs leading-relaxed text-gray-400">{f.description}</p>
-                    <p className="text-xs text-gray-500">
+                    <h3 className="mb-2 text-sm font-semibold text-primary">{f.title}</h3>
+                    <p className="mb-2 text-xs leading-relaxed text-secondary">{f.description}</p>
+                    <p className="text-xs text-muted">
                       <span className="text-neon-blue/70">Problem:</span> {f.problem}
                     </p>
                   </motion.div>
                 ))}
               </div>
 
-              <p className="mt-6 text-center text-xs text-gray-600">
+              <p className="mt-6 text-center text-xs text-muted">
                 Showing {displayed.length} of {features.length} features
               </p>
             </>
@@ -208,3 +208,7 @@ export default function Home() {
     </div>
   )
 }
+
+
+
+

@@ -36,7 +36,7 @@ export default function Blog() {
             <h1 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
               Blog & <span className="text-gradient">Articles</span>
             </h1>
-            <p className="mb-12 text-gray-400">My writings on Medium about tech, AI, and privacy</p>
+            <p className="mb-12 text-secondary text-base">My writings on Medium about tech, AI, and privacy</p>
           </motion.div>
 
           {loading ? (
@@ -44,8 +44,8 @@ export default function Blog() {
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-neon-blue border-t-transparent" />
             </div>
           ) : articles.length === 0 ? (
-            <div className="rounded-xl border border-dark-border bg-dark-card p-8 text-center">
-              <p className="text-gray-500">No articles found. Check back later.</p>
+            <div className="rounded-xl border border-card bg-card p-8 text-center">
+              <p className="text-muted">No articles found. Check back later.</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -58,16 +58,16 @@ export default function Blog() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1, duration: 0.4 }}
-                  className="block rounded-xl border border-dark-border bg-dark-card p-6 transition-all duration-300 hover:border-neon-blue/30"
+                  className="block rounded-xl border border-card bg-card p-6 transition-all duration-300 hover:border-neon-blue/30"
                 >
-                  <div className="mb-3 flex items-center gap-3 text-xs text-gray-500">
+                  <div className="mb-3 flex items-center gap-3 text-xs text-muted">
                     <span>{new Date(article.pubDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
                     {article.categories.length > 0 && (
                       <>
                         <span>·</span>
                         <div className="flex gap-1.5">
                           {article.categories.map((c) => (
-                            <span key={c} className="rounded-md bg-dark-hover px-2 py-0.5 text-xs text-gray-400">
+                            <span key={c} className="rounded-md bg-hover px-2 py-0.5 text-xs text-secondary">
                               {c}
                             </span>
                           ))}
@@ -75,11 +75,11 @@ export default function Blog() {
                       </>
                     )}
                   </div>
-                  <h2 className="mb-2 text-lg font-semibold text-white transition-colors group-hover:text-neon-blue">
+                  <h2 className="mb-2 text-lg font-semibold text-primary transition-colors group-hover:text-neon-blue">
                     {article.title}
                   </h2>
                   <p
-                    className="line-clamp-2 text-sm leading-relaxed text-gray-400"
+                    className="line-clamp-2 text-sm leading-relaxed text-secondary"
                     dangerouslySetInnerHTML={{
                       __html: article.description.replace(/<[^>]+>/g, "").slice(0, 200) + "...",
                     }}
@@ -99,7 +99,7 @@ export default function Blog() {
             <a
               href="https://medium.com/@shamkarthik88"
               target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-white"
+              className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-primary"
             >
               View all on Medium
               <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,3 +112,7 @@ export default function Blog() {
     </div>
   )
 }
+
+
+
+

@@ -53,7 +53,11 @@ export function StatCard({ icon, value, suffix, label, color }: StatCardProps) {
       <p className={`text-2xl font-bold ${color}`}>
         <AnimatedCounter value={value} suffix={suffix || "+"} />
       </p>
-      <p className="mt-1 text-xs text-gray-500">{label}</p>
+      <p className="mt-1 text-xs text-muted">{label}</p>
     </motion.div>
   )
 }
+
+
+
+

@@ -13,7 +13,7 @@ export default function Contact() {
             <h1 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
               Get in <span className="text-gradient">Touch</span>
             </h1>
-            <p className="mb-12 text-gray-400">Have a question or want to collaborate?</p>
+            <p className="mb-12 text-secondary text-base">Have a question or want to collaborate?</p>
           </motion.div>
 
           <motion.form
@@ -30,28 +30,28 @@ export default function Contact() {
                 name="name"
                 placeholder="Your Name"
                 required
-                className="w-full rounded-lg border border-dark-border bg-dark-card px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
+                className="w-full rounded-lg border border-card bg-card px-4 py-3 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
               />
               <input
                 type="email"
                 name="email"
                 placeholder="Your Email"
                 required
-                className="w-full rounded-lg border border-dark-border bg-dark-card px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
+                className="w-full rounded-lg border border-card bg-card px-4 py-3 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
               />
             </div>
             <input
               type="text"
               name="subject"
               placeholder="Subject"
-              className="w-full rounded-lg border border-dark-border bg-dark-card px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
+              className="w-full rounded-lg border border-card bg-card px-4 py-3 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
             />
             <textarea
               name="message"
               placeholder="Your Message"
               rows={5}
               required
-              className="w-full resize-none rounded-lg border border-dark-border bg-dark-card px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
+              className="w-full resize-none rounded-lg border border-card bg-card px-4 py-3 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20"
             />
             <button
               type="submit"
@@ -67,8 +67,8 @@ export default function Contact() {
             transition={{ delay: 0.4, duration: 0.5 }}
             className="mt-12"
           >
-            <div className="rounded-xl border border-dark-border bg-dark-card p-6">
-              <h3 className="mb-4 text-sm font-semibold text-gray-300">Connect with me</h3>
+            <div className="rounded-xl border border-card bg-card p-6">
+              <h3 className="mb-4 text-sm font-semibold text-secondary">Connect with me</h3>
               <div className="space-y-3">
                 {[
                   { label: "Email", value: "shamkarthik88@gmail.com", href: "mailto:shamkarthik88@gmail.com" },
@@ -81,10 +81,10 @@ export default function Contact() {
                     href={c.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between rounded-lg bg-dark-hover px-4 py-3 text-sm transition-colors hover:bg-dark-hover/80"
+                    className="flex items-center justify-between rounded-lg bg-hover px-4 py-3 text-sm transition-colors hover:bg-hover/80"
                   >
-                    <span className="text-gray-500">{c.label}</span>
-                    <span className="text-gray-300">{c.value}</span>
+                    <span className="text-muted">{c.label}</span>
+                    <span className="text-secondary">{c.value}</span>
                   </a>
                 ))}
               </div>
@@ -95,3 +95,7 @@ export default function Contact() {
     </div>
   )
 }
+
+
+
+

@@ -17,5 +17,4 @@ export const certifications = [
 export const languages = [
   { name: "English", level: "Expert" },
   { name: "Tamil", level: "Expert" },
-  { name: "Hindi", level: "Beginner" },
 ]

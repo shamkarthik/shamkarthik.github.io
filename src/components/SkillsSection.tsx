@@ -12,15 +12,15 @@ export default function SkillsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="mb-2 text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
             Technical <span className="text-gradient">Skills</span>
           </h2>
-          <p className="mb-12 text-gray-400">Technologies I work with daily</p>
+          <p className="mb-12 text-secondary text-base">Technologies I work with daily</p>
         </motion.div>
 
         <div className="mb-12 grid gap-8 lg:grid-cols-5">
           <div className="lg:col-span-2">
-            <h3 className="mb-4 text-sm font-semibold text-gray-300">Proficiency</h3>
+            <h3 className="mb-4 text-sm font-semibold text-secondary">Proficiency</h3>
             <SkillBars />
           </div>
           <div className="lg:col-span-3">
@@ -32,12 +32,12 @@ export default function SkillsSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: ci * 0.1, duration: 0.4 }}
-                  className="rounded-xl border border-dark-border bg-dark-card p-5 transition-all duration-300 hover:border-neon-blue/30"
+                  className="rounded-xl border border-card bg-card p-5 transition-all duration-300 hover:border-neon-blue/30"
                 >
                   <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-neon-blue">{category}</h3>
                   <div className="flex flex-wrap gap-2">
                     {items.map((s) => (
-                      <span key={s} className="rounded-md bg-dark-hover px-2.5 py-1 text-xs text-gray-300">
+                      <span key={s} className="rounded-md bg-hover px-2.5 py-1 text-xs text-secondary">
                         {s}
                       </span>
                     ))}
@@ -50,28 +50,28 @@ export default function SkillsSection() {
 
         <div className="grid gap-6 sm:grid-cols-2">
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-gray-300">Certifications</h3>
+            <h3 className="mb-4 text-lg font-semibold text-secondary">Certifications</h3>
             <div className="space-y-3">
               {certifications.map((c) => (
-                <div key={c.title} className="rounded-lg border border-dark-border bg-dark-card p-4">
-                  <p className="text-sm font-medium text-white">{c.title}</p>
-                  <p className="mt-1 text-xs text-gray-500">{c.issuer}</p>
+                <div key={c.title} className="rounded-lg border border-card bg-card p-4">
+                  <p className="text-sm font-medium text-primary">{c.title}</p>
+                  <p className="mt-1 text-xs text-muted">{c.issuer}</p>
                 </div>
               ))}
             </div>
           </div>
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-gray-300">Languages</h3>
+            <h3 className="mb-4 text-lg font-semibold text-secondary">Languages</h3>
             <div className="space-y-3">
               {languages.map((l) => (
-                <div key={l.name} className="flex items-center justify-between rounded-lg border border-dark-border bg-dark-card p-4">
+                <div key={l.name} className="flex items-center justify-between rounded-lg border border-card bg-card p-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-dark-hover text-xs font-bold text-neon-blue">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-hover text-xs font-bold text-neon-blue">
                       {l.name[0]}
                     </div>
-                    <p className="text-sm font-medium text-white">{l.name}</p>
+                    <p className="text-sm font-medium text-primary">{l.name}</p>
                   </div>
-                  <p className="text-xs text-gray-500">{l.level}</p>
+                  <p className="text-xs text-muted">{l.level}</p>
                 </div>
               ))}
             </div>
@@ -81,3 +81,7 @@ export default function SkillsSection() {
     </section>
   )
 }
+
+
+
+

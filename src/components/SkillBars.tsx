@@ -27,10 +27,10 @@ export default function SkillBars() {
       {bars.map((bar) => (
         <div key={bar.name}>
           <div className="mb-1.5 flex items-center justify-between text-xs">
-            <span className="text-gray-300">{bar.name}</span>
-            <span className="text-gray-500">{bar.level}%</span>
+            <span className="text-secondary">{bar.name}</span>
+            <span className="text-muted">{bar.level}%</span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-dark-hover">
+          <div className="h-2 overflow-hidden rounded-full bg-hover">
             <motion.div
               initial={{ width: 0 }}
               animate={inView ? { width: `${bar.level}%` } : {}}
@@ -44,3 +44,7 @@ export default function SkillBars() {
     </div>
   )
 }
+
+
+
+
