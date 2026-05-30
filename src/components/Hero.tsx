@@ -1,9 +1,18 @@
 import { motion } from "framer-motion"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { StatCard } from "./AnimatedCounter"
+import { experiences } from "../data/experience"
+import { projects } from "../data/projects"
 
 export default function Hero() {
   const [copied, setCopied] = useState(false)
+
+  const projectCount = useMemo(() => {
+    const workNames = new Set(experiences.flatMap(e => e.projects.map(p => p.name)))
+    const personalNames = projects.filter(p => p.type === "personal").map(p => p.title)
+    const all = new Set([...workNames, ...personalNames])
+    return all.size
+  }, [])
 
   const copyEmail = async () => {
     try {
@@ -117,7 +126,7 @@ export default function Hero() {
         className="mt-12 grid w-full max-w-lg grid-cols-2 gap-6 border-t border-card pt-8 md:mt-16 md:gap-8 md:pt-10"
       >
         <StatCard icon="calendar" value={5} suffix="+" label="Years Experience" color="text-neon-blue" />
-        <StatCard icon="award" value={15} suffix="+" label="Projects Delivered" color="text-neon-purple" />
+        <StatCard icon="award" value={projectCount} suffix="+" label="Projects Delivered" color="text-neon-purple" />
       </motion.div>
 
       <motion.div
