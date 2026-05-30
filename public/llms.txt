@@ -1,0 +1,41 @@
+# Sham Karthik S
+
+## Who is Sham Karthik S?
+Sham Karthik S is a Senior AI/ML Engineer at Tiger Analytics (since Jan 2023) based in Chennai, India. He specializes in on-device artificial intelligence, computer vision, edge inference, cross-platform mobile development, and full-stack web engineering.
+
+## Current Role
+- **Senior AI/ML Engineer** at Tiger Analytics (Jan 2023 – Present)
+  - Building production AI/ML systems
+  - On-device inference and edge deployment
+  - Cross-platform mobile solutions
+
+## Previous Experience
+- **Software Engineer** at Hexaware Technologies
+
+## Technical Skills
+- **Languages**: TypeScript, Python, C++, Dart, Kotlin
+- **Frontend**: React, Tailwind CSS, Framer Motion
+- **Mobile**: React Native, Flutter, Kotlin Multiplatform
+- **AI/ML**: ONNX, TensorFlow Lite, Computer Vision, Edge Inference
+- **Backend/Cloud**: Node.js, Azure, Docker, CI/CD
+- **Tools**: Git, VS Code, Postman, Figma
+
+## Key Projects
+1. **AIGronomist** — On-device potato disease detection using computer vision models deployed on mobile devices
+2. **PepIris** — Fraud detection system leveraging machine learning for financial transaction monitoring
+3. **TLDR-ON** — Chrome extension for AI-powered text summarization
+4. **PayFinder** — Payment discovery and management tool
+
+## Languages Spoken
+- English (fluent)
+- Tamil (native)
+
+## Contact
+- **Email**: shamkarthik88@gmail.com
+- **GitHub**: https://github.com/shamkarthik
+- **LinkedIn**: https://linkedin.com/in/sham-karthik-s
+- **Medium**: https://medium.com/@shamkarthik88
+- **Portfolio**: https://shamkarthik.github.io
+
+## Resume
+https://shamkarthik.github.io/ShamkarthikS.pdf
