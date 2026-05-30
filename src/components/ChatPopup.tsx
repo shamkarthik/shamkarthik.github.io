@@ -4,7 +4,7 @@ import { Wllama } from "@wllama/wllama"
 
 const WLLAMA_CDN = "https://cdn.jsdelivr.net/npm/@wllama/wllama@3.4.0/esm/wasm/wllama.wasm"
 
-const MODEL_URL = "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf"
+const MODEL_URL = "https://huggingface.co/LiquidAI/LFM2-700M-GGUF/resolve/main/LFM2-700M-Q4_K_M.gguf"
 
 const SYSTEM_PROMPT = `You are Sham's personal AI agent. You know everything about Sham Karthik S from the facts below.
 
