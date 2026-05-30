@@ -29,7 +29,7 @@ export default function Hero() {
         >
           <div className="glow-blue relative h-32 w-32 overflow-hidden rounded-full border-2 border-neon-blue/30 sm:h-40 sm:w-40">
             <img
-              src="https://avatars.githubusercontent.com/u/53367916?v=4"
+              src="/photo.png"
               alt="Sham Karthik S"
               className="h-full w-full object-cover"
             />
