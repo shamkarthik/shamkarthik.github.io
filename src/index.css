@@ -19,15 +19,15 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-image: linear-gradient(to right, var(--color-neon-blue), var(--color-neon-purple));
   }
   .glow-blue {
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), 0 0 40px rgba(0, 212, 255, 0.05);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--color-neon-blue) 15%, transparent), 0 0 40px color-mix(in srgb, var(--color-neon-blue) 5%, transparent);
   }
   .glow-purple {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.05);
-  }
-  .card-hover {
-    @apply transition-all duration-300 hover:border-neon-blue/30 hover:glow-blue;
+    box-shadow: 0 0 20px color-mix(in srgb, var(--color-neon-purple) 15%, transparent), 0 0 40px color-mix(in srgb, var(--color-neon-purple) 5%, transparent);
   }
 }

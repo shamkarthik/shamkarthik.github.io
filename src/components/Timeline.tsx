@@ -34,7 +34,7 @@ export default function Timeline() {
             >
               <div className="absolute left-2.5 top-2 z-10 h-[15px] w-[15px] rounded-full border-2 border-neon-blue bg-[#0a0a0f]" />
 
-              <div className="rounded-xl border border-dark-border bg-dark-card p-6 card-hover">
+              <div className="rounded-xl border border-dark-border bg-dark-card p-6 transition-all duration-300 hover:border-neon-blue/30">
                 <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-white">{exp.role}</h3>

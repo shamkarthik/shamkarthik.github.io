@@ -25,7 +25,7 @@ export default function SkillsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: ci * 0.1, duration: 0.4 }}
-              className="rounded-xl border border-dark-border bg-dark-card p-5 card-hover"
+              className="rounded-xl border border-dark-border bg-dark-card p-5 transition-all duration-300 hover:border-neon-blue/30"
             >
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-neon-blue">{category}</h3>
               <div className="flex flex-wrap gap-2">
