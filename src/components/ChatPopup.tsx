@@ -4,7 +4,7 @@ import { CreateMLCEngine, type ChatCompletionMessageParam } from "@mlc-ai/web-ll
 
 const MODEL_ID = "SmolLM2-360M-Instruct-q4f16_1-MLC"
 
-const SYSTEM_PROMPT = `You are a personal AI assistant for Sham Karthik S's portfolio website. Answer questions about Sham based on the following information. Be concise, friendly, and accurate.
+const SYSTEM_PROMPT = `You are a helpful AI agent with detailed knowledge about Sham Karthik S. Users ask you about Sham's background, skills, experience, and projects. Answer based on the information below. Be concise, friendly, and accurate. Never claim to be Sham — you are an agent who knows about him.
 
 ABOUT SHAM KARTHIK S:
 - Full Name: Sham Karthik S
@@ -93,7 +93,7 @@ export default function ChatPopup() {
           setMessages([
             {
               role: "assistant",
-              content: "Hey! I'm Sham's AI assistant. Ask me anything about his experience, skills, or projects!",
+              content: "Hey! I'm an AI agent with knowledge about Sham Karthik S. Ask me anything about his experience, skills, or projects!",
             },
           ])
         }
@@ -178,7 +178,7 @@ export default function ChatPopup() {
     setMessages([
       {
         role: "assistant",
-        content: "Hey! I'm Sham's AI assistant. Ask me anything about his experience, skills, or projects!",
+        content: "Hey! I'm an AI agent with knowledge about Sham Karthik S. Ask me anything about his experience, skills, or projects!",
       },
     ])
   }
@@ -223,7 +223,7 @@ export default function ChatPopup() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-primary">Ask Sham's AI</p>
+                  <p className="text-sm font-medium text-primary">Sham's AI Agent</p>
                   <p className="text-[10px] text-muted">
                     {state.phase === "loading" ? "Loading…" : state.phase === "error" ? "Offline" : "On-device · Ready"}
                   </p>
