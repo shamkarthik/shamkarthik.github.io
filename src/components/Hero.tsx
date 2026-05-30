@@ -36,20 +36,20 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-neon-blue/20 bg-neon-blue/5 px-5 py-2 text-base text-neon-blue">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-neon-green" />
-          Senior AI/ML Engineer @ Tiger Analytics
+        <div className="mb-6 inline-flex max-sm:flex-wrap max-sm:justify-center items-center gap-2 rounded-full border border-neon-blue/20 bg-neon-blue/5 px-4 py-1.5 text-sm text-neon-blue sm:px-5 sm:py-2 sm:text-base">
+          <span className="h-2 w-2 flex-shrink-0 animate-pulse rounded-full bg-neon-green" />
+          <span>Senior AI/ML Engineer @ Tiger Analytics</span>
         </div>
 
-        <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-7xl lg:text-8xl">
+        <h1 className="mb-4 text-balance text-4xl font-bold tracking-tight sm:text-7xl lg:text-8xl">
           Sham{" "}
           <span className="text-gradient">Karthik S</span>
         </h1>
 
-        <p className="mx-auto mb-4 max-w-3xl text-base leading-relaxed text-secondary sm:text-lg md:text-2xl">
+        <p className="mx-auto mb-4 max-w-3xl text-balance text-base leading-relaxed text-secondary sm:text-lg md:text-2xl">
           On-device AI · Edge Inference · Cross-Platform Native · Full-Stack Web
         </p>
-        <p className="mx-auto mb-8 max-w-2xl text-sm text-muted sm:text-base">
+        <p className="mx-auto mb-8 max-w-2xl text-balance text-sm text-muted sm:text-base">
           Software engineer building intelligent systems — from silicon to UI
         </p>
 

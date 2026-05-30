@@ -81,10 +81,10 @@ export default function Contact() {
                     href={c.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between rounded-lg bg-hover px-4 py-3 text-sm transition-colors hover:bg-hover/80"
+                    className="flex flex-col items-start gap-0.5 rounded-lg bg-hover px-4 py-3 text-sm transition-colors hover:bg-hover/80 sm:flex-row sm:items-center sm:justify-between"
                   >
-                    <span className="text-muted">{c.label}</span>
-                    <span className="text-secondary">{c.value}</span>
+                    <span className="text-xs text-muted sm:text-sm">{c.label}</span>
+                    <span className="break-all text-xs text-secondary sm:text-sm">{c.value}</span>
                   </a>
                 ))}
               </div>
