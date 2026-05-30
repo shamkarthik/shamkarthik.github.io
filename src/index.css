@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neon-blue: #00d4ff;
+  --color-neon-purple: #8b5cf6;
+  --color-neon-green: #00ff88;
+  --color-neon-pink: #ff2d55;
+  --color-dark-card: #12121a;
+  --color-dark-border: #1e1e2e;
+  --color-dark-hover: #1a1a2e;
+}
+
+@layer base {
+  * { scrollbar-width: thin; scrollbar-color: #1e1e2e transparent; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #1e1e2e; border-radius: 3px; }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent;
+  }
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), 0 0 40px rgba(0, 212, 255, 0.05);
+  }
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.05);
+  }
+  .card-hover {
+    @apply transition-all duration-300 hover:border-neon-blue/30 hover:glow-blue;
+  }
+}
