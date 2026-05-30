@@ -46,8 +46,11 @@ export default function Hero() {
           <span className="text-gradient">Karthik S</span>
         </h1>
 
-        <p className="mx-auto mb-8 max-w-3xl text-base leading-relaxed text-secondary sm:text-lg md:text-2xl">
-          On-device AI · Edge Inference · Cross-Platform Native
+        <p className="mx-auto mb-4 max-w-3xl text-base leading-relaxed text-secondary sm:text-lg md:text-2xl">
+          On-device AI · Edge Inference · Cross-Platform Native · Full-Stack Web
+        </p>
+        <p className="mx-auto mb-8 max-w-2xl text-sm text-muted sm:text-base">
+          Software engineer building intelligent systems — from silicon to UI
         </p>
 
         <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">

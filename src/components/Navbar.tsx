@@ -5,7 +5,6 @@ import ThemeToggle from "./ThemeToggle"
 const links = [
   { to: "/", label: "Home" },
   { to: "/blog", label: "Blog" },
-  { to: "/chat", label: "AI Chat" },
   { to: "/contributions", label: "Contributions" },
   { to: "/contact", label: "Contact" },
 ]

@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
+import ChatPopup from "./components/ChatPopup"
 import ParticleBackground from "./components/ParticleBackground"
 import Home from "./pages/Home"
 import Blog from "./pages/Blog"
-import Chat from "./pages/Chat"
 import Contact from "./pages/Contact"
 import Contributions from "./pages/Contributions"
 
@@ -17,11 +17,11 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<Blog />} />
-          <Route path="/chat" element={<Chat />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/contributions" element={<Contributions />} />
         </Routes>
       </main>
+      <ChatPopup />
       <Footer />
     </div>
   )

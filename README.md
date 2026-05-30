@@ -1,6 +1,6 @@
 # shamkarthik.github.io
 
-Personal portfolio — Sham Karthik S · Senior AI/ML Engineer
+Personal portfolio — Sham Karthik S · Senior AI/ML Engineer · Full-Stack Software Engineer
 
 Built with React 19 + Vite + Tailwind CSS v4.
 
@@ -22,22 +22,20 @@ Built with React 19 + Vite + Tailwind CSS v4.
 
 | Route | Content |
 |-------|---------|
-| `/` | Hero, Experience Timeline, Open Source Projects, Skills, AIGronomist features |
+| `/` | Hero, What I Do, Experience Timeline, Open Source Projects, Edge AI Capabilities, Skills |
 | `/blog` | Medium RSS feed via rss2json |
-| `/chat` | On-device AI chat (SmolLM2-360M via WebLLM, runs in-browser) |
 | `/contact` | Contact form + social links |
 | `/contributions` | GitHub stats, language chart, contribution graph, recent activity |
 
 ## Features
 
 - 🌓 Dark/Light theme toggle (persisted in localStorage)
-- 🤖 On-device AI chat via WebLLM (WebGPU, no server needed)
+- 🤖 On-device AI chat popup via WebLLM (WebGPU, no server needed)
 - 📊 Animated stat counters (Years Exp, Projects Delivered)
 - 📈 Skill proficiency bars with animated fill
 - 📉 Language distribution bar chart
-- 🏷️ AIGronomist features (top 15, filterable by category)
+- 🏷️ Edge AI capabilities (filterable by category)
 - 📱 Fully responsive (mobile-first)
-- 🎯 E2E tests via Playwright
 
 ## Getting Started
 
