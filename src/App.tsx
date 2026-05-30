@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import ScrollToTop from "./components/ScrollToTop"
-import ErrorBoundary from "./components/ErrorBoundary"
 import ChatPopup from "./components/ChatPopup"
 import ElectricEffect from "./components/ElectricEffect"
 import Home from "./pages/Home"
@@ -26,9 +25,7 @@ export default function App() {
       </main>
       <ScrollToTop />
       <Footer />
-      <ErrorBoundary>
-        <ChatPopup />
-      </ErrorBoundary>
+      <ChatPopup />
     </div>
   )
 }

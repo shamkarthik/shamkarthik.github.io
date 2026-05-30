@@ -22,8 +22,8 @@
     "vite": "^8.0.12"
   },
   "dependencies": {
-    "@mlc-ai/web-llm": "^0.2.84",
     "@vitejs/plugin-react": "^6.0.2",
+    "@wllama/wllama": "^3.4.0",
     "framer-motion": "^12.40.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",

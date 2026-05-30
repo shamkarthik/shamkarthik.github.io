@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { CreateMLCEngine, type ChatCompletionMessageParam } from "@mlc-ai/web-llm"
+import { Wllama } from "@wllama/wllama"
 
-const MODEL_ID = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC"
+const WLLAMA_CDN = "https://cdn.jsdelivr.net/npm/@wllama/wllama@3.4.0/esm/wasm/wllama.wasm"
+
+const MODEL_URL = "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf"
 
 const SYSTEM_PROMPT = `You are Sham's personal AI agent. You know everything about Sham Karthik S from the facts below.
 
@@ -32,7 +34,7 @@ type PopupState =
   | { phase: "loading" }
   | { phase: "error"; message: string }
   | { phase: "ready" }
-  | { phase: "generating"; abortController: AbortController }
+  | { phase: "generating" }
 
 export default function ChatPopup() {
   const [open, setOpen] = useState(false)
@@ -41,7 +43,8 @@ export default function ChatPopup() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
-  const engineRef = useRef<Awaited<ReturnType<typeof CreateMLCEngine>> | null>(null)
+  const wllamaRef = useRef<Wllama | null>(null)
+  const abortRef = useRef<AbortController | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -52,19 +55,23 @@ export default function ChatPopup() {
 
     ;(async () => {
       try {
-        const engine = await CreateMLCEngine(MODEL_ID, {
-          initProgressCallback: (p) => {
-            if (!cancelled) setProgress(p.text || `${Math.round((p.progress || 0) * 100)}%`)
+        const wllama = new Wllama({ default: WLLAMA_CDN })
+        await wllama.loadModelFromUrl(MODEL_URL, {
+          progressCallback: (p) => {
+            if (!cancelled) {
+              const pct = Math.round((p.loaded / p.total) * 100)
+              setProgress(`Downloading model... ${pct}%`)
+            }
           },
         })
         if (cancelled) return
-        engineRef.current = engine
+        wllamaRef.current = wllama
         if (!cancelled) {
           setState({ phase: "ready" })
           setMessages([
             {
               role: "assistant",
-content: "Hey! I'm an AI agent who knows about Sham Karthik S. Ask me anything about his experience, skills, or projects!",
+              content: "Hey! I'm an AI agent who knows about Sham Karthik S. Ask me anything about his experience, skills, or projects!",
             },
           ])
         }
@@ -96,28 +103,30 @@ content: "Hey! I'm an AI agent who knows about Sham Karthik S. Ask me anything a
     setMessages((prev) => [...prev, userMsg])
 
     const abortController = new AbortController()
-    setState({ phase: "generating", abortController })
+    abortRef.current = abortController
+    setState({ phase: "generating" })
 
     const assistantMsg: Message = { role: "assistant", content: "" }
     setMessages((prev) => [...prev, assistantMsg])
 
     try {
-      const history: ChatCompletionMessageParam[] = [
+      const history = [
         { role: "system", content: SYSTEM_PROMPT },
         ...messages,
         userMsg,
       ]
 
-      const chunks = await engineRef.current!.chat.completions.create({
-        messages: history,
-        temperature: 0.3,
+      const stream = await wllamaRef.current!.createChatCompletion({
+        messages: history as any,
         max_tokens: 256,
+        temperature: 0.3,
         stream: true,
+        abortSignal: abortController.signal,
       })
 
       let full = ""
-      for await (const chunk of chunks) {
-        const delta = chunk.choices[0]?.delta.content || ""
+      for await (const chunk of stream) {
+        const delta = chunk.choices[0]?.delta?.content || ""
         full += delta
         setMessages((prev) => {
           const next = [...prev]
@@ -134,15 +143,15 @@ content: "Hey! I'm an AI agent who knows about Sham Karthik S. Ask me anything a
         return next
       })
     } finally {
+      abortRef.current = null
       setState((prev) => (prev.phase === "generating" ? { phase: "ready" } : prev))
     }
   }
 
   function handleStop() {
-    if (state.phase === "generating") {
-      state.abortController.abort()
-      setState({ phase: "ready" })
-    }
+    abortRef.current?.abort()
+    abortRef.current = null
+    setState({ phase: "ready" })
   }
 
   function handleReset() {
@@ -229,8 +238,8 @@ content: "Hey! I'm an AI agent who knows about Sham Karthik S. Ask me anything a
                   <svg className="mb-3 h-8 w-8 text-neon-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                   </svg>
-                  <p className="mb-1 text-xs font-semibold text-neon-pink">WebGPU Required</p>
-                  <p className="text-[10px] text-muted">This browser doesn't support WebGPU. Try Chrome on a device with a capable GPU.</p>
+                  <p className="mb-1 text-xs font-semibold text-neon-pink">Failed to Load</p>
+                  <p className="text-[10px] text-muted">{state.phase === "error" ? state.message : ""}</p>
                 </div>
               )}
 
