@@ -1,111 +1,88 @@
 import { useEffect, useRef, useState } from "react"
 
 interface Point { x: number; y: number }
-interface Bolt { pts: Point[]; branches: BranchBolt[]; life: number; maxLife: number; completed: boolean }
-interface BranchBolt { pts: Point[]; subBranches: Point[][]; fromIdx: number }
-interface Spark { x: number; y: number; vx: number; vy: number; life: number; maxLife: number; hue: number }
+interface Bolt { pts: Point[]; branches: Point[][]; life: number; maxLife: number }
+interface Spark { x: number; y: number; vx: number; vy: number; life: number; maxLife: number }
 
-function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
+function dist(a: Point, b: Point) { return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2) }
 
-/** Fractal midpoint displacement — produces realistic stepped-leader zigzag */
-function fractalBolt(
-  from: Point,
-  to: Point,
-  displacement: number,
-  detail: number,
-): Point[] {
-  const dx = to.x - from.x
-  const dy = to.y - from.y
-  const dist = Math.sqrt(dx * dx + dy * dy)
+/** Jagged random walk — real lightning doesn't bisect, it STEPS with sharp turns */
+function jaggedBolt(from: Point, to: Point, jitter: number): Point[] {
+  const pts: Point[] = [{ ...from }]
+  let x = from.x, y = from.y
+  const totalDist = dist(from, to)
+  if (totalDist < 5) return [from, to]
 
-  if (dist < 5 || detail <= 0) return [from, to]
+  const steps = 8 + Math.floor(Math.random() * 8)
+  const baseStep = totalDist / steps
 
-  const mx = (from.x + to.x) / 2
-  const my = (from.y + to.y) / 2
+  for (let i = 0; i < steps * 3; i++) {
+    const remaining = dist({ x, y }, to)
+    if (remaining < baseStep * 0.5) break
 
-  // Perpendicular to the bolt direction (normalized)
-  const px = -dy / dist
-  const py = dx / dist
+    const targetAngle = Math.atan2(to.y - y, to.x - x)
 
-  // Displacement increases toward the tip (makes tip more jagged = realistic)
-  const d = (Math.random() * 2 - 1) * displacement * dist * (0.18 + 0.06 * (1 - detail / 8))
-  const rmx = mx + px * d
-  const rmy = my + py * d
+    // Two-regime jitter: 70% small zigzag, 30% sharp turn
+    let jit: number
+    if (Math.random() < 0.65) {
+      jit = jitter * (0.1 + Math.random() * 0.25)
+    } else {
+      jit = jitter * (0.5 + Math.random() * 1.2)
+    }
 
-  const left = fractalBolt(from, { x: rmx, y: rmy }, displacement * 0.62, detail - 1)
-  const right = fractalBolt({ x: rmx, y: rmy }, to, displacement * 0.62, detail - 1)
+    const jitterAngle = (Math.random() - 0.5) * jit
+    const angle = targetAngle + jitterAngle
 
-  return left.concat(right.slice(1))
+    // Step size: bigger when jitter is small, smaller when turning hard
+    const stepMul = 1 - Math.abs(jitterAngle) / Math.PI * 0.5
+    const step = Math.max(baseStep * 0.3, remaining * 0.4 * stepMul)
+
+    x += Math.cos(angle) * step
+    y += Math.sin(angle) * step
+
+    // Keep within bounds of destination (don't fly past)
+    if (dist({ x, y }, to) > remaining * 1.3) {
+      x -= Math.cos(angle) * step * 0.6
+      y -= Math.sin(angle) * step * 0.6
+      continue
+    }
+
+    pts.push({ x, y })
+  }
+
+  pts.push({ ...to })
+  return pts
 }
 
-/** Generate branches using the same fractal algorithm — only on lower half of bolt */
-function makeBranchesRealistic(
-  main: Point[],
-  displacement: number,
-  detail: number,
-): BranchBolt[] {
-  const branches: BranchBolt[] = []
-  const halfIdx = Math.floor(main.length * 0.4)
+/** Jagged branches — shoot off at sharp angles, shorter, more chaotic */
+function makeBranchesJagged(main: Point[], jitter: number): Point[][] {
+  const branches: Point[][] = []
+  const halfIdx = Math.floor(main.length * 0.35)
 
-  for (const segIdx of main.keys()) {
-    if (segIdx < halfIdx) continue
-    if (segIdx >= main.length - 1) continue
+  for (let si = halfIdx; si < main.length - 1; si++) {
+    if (Math.random() > 0.25) continue
 
-    if (Math.random() > 0.35) continue
+    const a = main[si], b = main[si + 1]
+    const t = 0.1 + Math.random() * 0.8
+    const origin: Point = {
+      x: a.x + (b.x - a.x) * t,
+      y: a.y + (b.y - a.y) * t,
+    }
 
-    const a = main[segIdx]
-    const b = main[segIdx + 1]
-    const t = 0.2 + Math.random() * 0.6
-    const origin = { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) }
-
-    const dx = b.x - a.x
-    const dy = b.y - a.y
+    const dx = b.x - a.x, dy = b.y - a.y
     const len = Math.sqrt(dx * dx + dy * dy) || 1
-    const nx = -dy / len
-    const ny = dx / len
-
-    // Fork at acute angle, swinging outward from bolt
+    // Perpendicular + random sharp angle
     const side = Math.random() > 0.5 ? 1 : -1
-    const angleOff = (Math.random() * 0.5 + 0.2) * side
-    const angle = Math.atan2(ny * side, nx * side) + angleOff
-    const branchLen = 40 + Math.random() * 120
+    const angle = Math.atan2(dy, dx) + side * (Math.PI * 0.4 + Math.random() * 0.5)
 
-    const end = {
+    const branchLen = 25 + Math.random() * 100
+    const end: Point = {
       x: origin.x + Math.cos(angle) * branchLen,
       y: origin.y + Math.sin(angle) * branchLen,
     }
 
-    const branchPts = fractalBolt(origin, end, displacement * 0.5, detail - 2)
-
-    // Sub-branches on this branch
-    const subBranches: Point[][] = []
-    const subHalf = Math.floor(branchPts.length * 0.3)
-    for (const si of branchPts.keys()) {
-      if (si < subHalf) continue
-      if (si >= branchPts.length - 1) continue
-      if (Math.random() > 0.3) continue
-
-      const sa = branchPts[si]
-      const sb = branchPts[si + 1]
-      const st = 0.3 + Math.random() * 0.4
-      const sorigin = { x: lerp(sa.x, sb.x, st), y: lerp(sa.y, sb.y, st) }
-
-      const sdx = sb.x - sa.x
-      const sdy = sb.y - sa.y
-      const slen = Math.sqrt(sdx * sdx + sdy * sdy) || 1
-      const snx = -sdy / slen
-      const sny = sdx / slen
-      const sside = Math.random() > 0.5 ? 1 : -1
-      const sangle = Math.atan2(sny * sside, snx * sside) + (Math.random() - 0.5) * 0.8
-      const sl = 15 + Math.random() * 40
-      const send = {
-        x: sorigin.x + Math.cos(sangle) * sl,
-        y: sorigin.y + Math.sin(sangle) * sl,
-      }
-      subBranches.push(fractalBolt(sorigin, send, displacement * 0.3, detail - 3))
-    }
-
-    branches.push({ pts: branchPts, subBranches, fromIdx: segIdx })
+    const pts = jaggedBolt(origin, end, jitter * 0.6)
+    if (pts.length >= 2) branches.push(pts)
   }
   return branches
 }
@@ -125,9 +102,7 @@ function getCardPositions(w: number, h: number): Point[] {
     }
   })
   if (pts.length === 0) {
-    for (let i = 0; i < 6; i++) {
-      pts.push({ x: Math.random() * w, y: Math.random() * h })
-    }
+    for (let i = 0; i < 6; i++) pts.push({ x: Math.random() * w, y: Math.random() * h })
   }
   return pts
 }
@@ -136,10 +111,7 @@ function hasWebGPU(): boolean {
   return 'gpu' in navigator && typeof navigator.gpu !== 'undefined'
 }
 
-function emitSparks(
-  sparks: Spark[], x: number, y: number, count: number,
-  hue = 200,
-) {
+function emitSparks(sparks: Spark[], x: number, y: number, count: number) {
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2
     const speed = 1 + Math.random() * 5
@@ -148,39 +120,9 @@ function emitSparks(
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed - 2,
       life: 0,
-      maxLife: 30 + Math.random() * 70,
-      hue: hue + (Math.random() - 0.5) * 30,
+      maxLife: 20 + Math.random() * 60,
     })
   }
-}
-
-function drawBoltSeg(
-  ctx: CanvasRenderingContext2D,
-  pts: Point[],
-  alpha: number,
-  glowW: number,
-  progress: number,
-) {
-  if (pts.length < 2) return
-  const drawLen = Math.max(2, Math.floor(pts.length * progress))
-
-  ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`
-  ctx.lineWidth = glowW
-  ctx.shadowColor = `rgba(0, 212, 255, ${alpha * 0.5})`
-  ctx.shadowBlur = 14
-  ctx.beginPath()
-  ctx.moveTo(pts[0].x, pts[0].y)
-  for (let j = 1; j < drawLen && j < pts.length; j++) ctx.lineTo(pts[j].x, pts[j].y)
-  ctx.stroke()
-
-  // Core
-  ctx.strokeStyle = `rgba(200, 240, 255, ${alpha * 0.9})`
-  ctx.lineWidth = 1.2
-  ctx.shadowBlur = 0
-  ctx.beginPath()
-  ctx.moveTo(pts[0].x, pts[0].y)
-  for (let j = 1; j < drawLen && j < pts.length; j++) ctx.lineTo(pts[j].x, pts[j].y)
-  ctx.stroke()
 }
 
 function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => void }) {
@@ -219,20 +161,19 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
     const onClick = (e: MouseEvent) => {
       const cx = e.clientX, cy = e.clientY
       const angle = Math.random() * Math.PI * 2
-      const dist = 200 + Math.random() * 400
+      const d2 = 200 + Math.random() * 400
       const target = {
-        x: cx + Math.cos(angle) * dist,
-        y: cy + Math.sin(angle) * dist,
+        x: cx + Math.cos(angle) * d2,
+        y: cy + Math.sin(angle) * d2,
       }
-      const main = fractalBolt({ x: cx, y: cy }, target, 0.25 + Math.random() * 0.1, 8)
+      const main = jaggedBolt({ x: cx, y: cy }, target, 0.8 + Math.random() * 0.4)
       boltsRef.current.push({
         pts: main,
-        branches: makeBranchesRealistic(main, 0.25, 7),
+        branches: makeBranchesJagged(main, 0.8),
         life: 0,
-        maxLife: 0.8 + Math.random() * 0.4,
-        completed: false,
+        maxLife: 0.7 + Math.random() * 0.3,
       })
-      emitSparks(sparksRef.current, cx, cy, 25)
+      emitSparks(sparksRef.current, cx, cy, 30)
     }
     window.addEventListener("click", onClick)
 
@@ -244,21 +185,20 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         for (let i = 0; i < 2; i++) {
           if (origins.length > 0) {
             const origin = origins[Math.floor(Math.random() * origins.length)]
-            const angle = Math.random() * Math.PI * 2
-            const dist = 120 + Math.random() * 280
+            const a2 = Math.random() * Math.PI * 2
+            const d2 = 150 + Math.random() * 250
             const target = {
-              x: origin.x + Math.cos(angle) * dist,
-              y: origin.y + Math.sin(angle) * dist,
+              x: origin.x + Math.cos(a2) * d2,
+              y: origin.y + Math.sin(a2) * d2,
             }
-            const main = fractalBolt(origin, target, 0.2 + Math.random() * 0.1, 7)
+            const main = jaggedBolt(origin, target, 0.7 + Math.random() * 0.3)
             boltsRef.current.push({
               pts: main,
-              branches: makeBranchesRealistic(main, 0.2, 6),
+              branches: makeBranchesJagged(main, 0.7),
               life: 0,
-              maxLife: 0.8 + Math.random() * 0.4,
-              completed: false,
+              maxLife: 0.7 + Math.random() * 0.3,
             })
-            emitSparks(sparksRef.current, origin.x, origin.y, 12)
+            emitSparks(sparksRef.current, origin.x, origin.y, 15)
           }
         }
       }
@@ -268,55 +208,39 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
 
     function spawnBolt() {
       const origins = getCardPositions(w, h)
-      if (origins.length > 0) {
-        const from = origins[Math.floor(Math.random() * origins.length)]
-        const isEdgeBolt = Math.random() > 0.5
-        let target: Point
-        if (isEdgeBolt) {
-          target = { x: Math.random() * w, y: Math.random() * h }
-        } else if (origins.length > 1) {
-          target = origins[Math.floor(Math.random() * origins.length)]
-        } else {
-          target = {
-            x: from.x + (Math.random() - 0.5) * 500,
-            y: from.y + (Math.random() - 0.5) * 500,
-          }
-        }
-        const main = fractalBolt(from, target, 0.2 + Math.random() * 0.12, 7 + Math.floor(Math.random() * 2))
-        boltsRef.current.push({
-          pts: main,
-          branches: makeBranchesRealistic(main, 0.2, 6),
-          life: 0,
-          maxLife: 0.7 + Math.random() * 0.6,
-          completed: false,
-        })
-        emitSparks(sparksRef.current, from.x, from.y, 8)
-      }
+      if (origins.length === 0) return
+      const from = origins[Math.floor(Math.random() * origins.length)]
+      const target = Math.random() > 0.5 && origins.length > 1
+        ? origins[Math.floor(Math.random() * origins.length)]
+        : { x: Math.random() * w, y: Math.random() * h }
+      const main = jaggedBolt(from, target, 0.7 + Math.random() * 0.4)
+      boltsRef.current.push({
+        pts: main,
+        branches: makeBranchesJagged(main, 0.7),
+        life: 0,
+        maxLife: 0.6 + Math.random() * 0.5,
+      })
+      emitSparks(sparksRef.current, from.x, from.y, 10)
     }
 
     function spawnEdgeSweep() {
-      const side = Math.floor(Math.random() * 4)
-      let from: Point, to: Point
-      const m = 50
-      switch (side) {
-        case 0: from = { x: -m, y: Math.random() * h }; to = { x: w + m, y: Math.random() * h }; break
-        case 1: from = { x: w + m, y: Math.random() * h }; to = { x: -m, y: Math.random() * h }; break
-        case 2: from = { x: Math.random() * w, y: -m }; to = { x: Math.random() * w, y: h + m }; break
-        default: from = { x: Math.random() * w, y: h + m }; to = { x: Math.random() * w, y: -m }; break
-      }
-      const main = fractalBolt(from, to, 0.15 + Math.random() * 0.08, 7)
+      const sides = [
+        { from: { x: -50, y: Math.random() * h }, to: { x: w + 50, y: Math.random() * h } },
+        { from: { x: w + 50, y: Math.random() * h }, to: { x: -50, y: Math.random() * h } },
+        { from: { x: Math.random() * w, y: -50 }, to: { x: Math.random() * w, y: h + 50 } },
+        { from: { x: Math.random() * w, y: h + 50 }, to: { x: Math.random() * w, y: -50 } },
+      ]
+      const s = sides[Math.floor(Math.random() * 4)]
+      const main = jaggedBolt(s.from, s.to, 0.5 + Math.random() * 0.3)
       boltsRef.current.push({
         pts: main,
-        branches: makeBranchesRealistic(main, 0.15, 6),
+        branches: makeBranchesJagged(main, 0.5),
         life: 0,
-        maxLife: 0.5 + Math.random() * 0.3,
-        completed: false,
+        maxLife: 0.4 + Math.random() * 0.2,
       })
     }
 
-    let boltTimer = 0
-    let sweepTimer = 0
-    let cardRefreshTimer = 0
+    let boltTimer = 0, sweepTimer = 0, cardRefreshTimer = 0
 
     function draw(t: number) {
       animId = requestAnimationFrame(draw)
@@ -325,7 +249,7 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
 
       ctx!.clearRect(0, 0, w, h)
 
-      // Ambient glow at mouse
+      // Ambient mouse glow
       if (mouseRef.current.active) {
         const g = ctx!.createRadialGradient(
           mouseRef.current.x, mouseRef.current.y, 0,
@@ -337,7 +261,7 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         ctx!.fillRect(0, 0, w, h)
       }
 
-      // Breathing ambient — blue + purple
+      // Breathing ambient
       const pulse = 0.3 + 0.7 * Math.sin(t / 1800)
       ctx!.fillStyle = `rgba(0, 212, 255, ${0.025 * pulse})`
       ctx!.fillRect(0, 0, w, h)
@@ -347,26 +271,20 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
 
       // Natural bolts
       boltTimer += dt
-      if (boltTimer > 1.2 + Math.random() * 2) {
-        spawnBolt()
-        boltTimer = 0
-      }
+      if (boltTimer > 1.2 + Math.random() * 2) { spawnBolt(); boltTimer = 0 }
 
       // Edge sweeps
       sweepTimer += dt
-      if (sweepTimer > 2 + Math.random() * 3) {
-        spawnEdgeSweep()
-        sweepTimer = 0
-      }
+      if (sweepTimer > 2 + Math.random() * 3) { spawnEdgeSweep(); sweepTimer = 0 }
 
-      // Refresh card origins
+      // Refresh card positions
       cardRefreshTimer += dt
       if (cardRefreshTimer > 1.5) {
         cardOriginsRef.current = getCardPositions(w, h)
         cardRefreshTimer = 0
       }
 
-      // Draw bolts — progressive draw (stepped leader effect)
+      // Draw bolts
       const bolts = boltsRef.current
       for (let i = bolts.length - 1; i >= 0; i--) {
         const b = bolts[i]
@@ -374,103 +292,82 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         if (b.life >= b.maxLife) { bolts.splice(i, 1); continue }
 
         const progress = b.life / b.maxLife
-        if (progress > 1) continue
+        let drawProgress: number, alpha: number, glowW: number, glowBoost = 1
 
-        // Step 1: leader stroke (fast forward propagation) — first 25% of life
-        // Step 2: full bolt visible 25-60%
-        // Step 3: fade out 60-100%
-        let drawProgress: number
-        let alpha: number
-        let glowW: number
-        let glowBoost = 1
-
-        if (progress < 0.25) {
-          // Leader stroke — bolt grows forward
-          drawProgress = progress / 0.25  // 0→1
-          alpha = drawProgress * 0.6
-          glowW = 1.5 + drawProgress * 2
+        if (progress < 0.2) {
+          drawProgress = progress / 0.2
+          alpha = drawProgress * 0.55
+          glowW = 1 + drawProgress * 2
         } else if (progress < 0.55) {
-          // Full bolt with flash
           drawProgress = 1
-          const flashIn = (progress - 0.25) / 0.3
-          alpha = 0.6 + flashIn * 0.3
-          glowW = 3.5 - flashIn * 0.5
-          glowBoost = 1 + (1 - flashIn) * 0.5
+          const flashIn = (progress - 0.2) / 0.35
+          alpha = 0.55 + flashIn * 0.35
+          glowW = 3 - flashIn * 0.5
+          glowBoost = 1 + (1 - flashIn) * 0.6
         } else {
-          // Fade out
           const fade = (progress - 0.55) / 0.45
           drawProgress = 1
           alpha = 0.9 * (1 - fade)
-          glowW = 3
+          glowW = 2.5
           glowBoost = 1 - fade * 0.3
         }
 
+        const drawLen = Math.max(2, Math.floor(b.pts.length * drawProgress))
         const shadowBlur = 14 * glowBoost
-        const glowAlpha = alpha * 0.5 * glowBoost
 
-        // Draw main bolt
+        // Glow layer
         ctx!.strokeStyle = `rgba(0, 212, 255, ${alpha})`
         ctx!.lineWidth = glowW
-        ctx!.shadowColor = `rgba(0, 212, 255, ${glowAlpha})`
+        ctx!.shadowColor = `rgba(0, 212, 255, ${alpha * 0.5 * glowBoost})`
         ctx!.shadowBlur = shadowBlur
         ctx!.beginPath()
-        const drawLen = Math.max(2, Math.floor(b.pts.length * drawProgress))
         ctx!.moveTo(b.pts[0].x, b.pts[0].y)
         for (let j = 1; j < Math.min(drawLen, b.pts.length); j++) ctx!.lineTo(b.pts[j].x, b.pts[j].y)
         ctx!.stroke()
 
         // Core
-        ctx!.strokeStyle = `rgba(200, 240, 255, ${alpha * 0.9})`
-        ctx!.lineWidth = 1.2
+        ctx!.strokeStyle = `rgba(200, 240, 255, ${alpha * 0.95})`
+        ctx!.lineWidth = 1.5
         ctx!.shadowBlur = 0
         ctx!.beginPath()
         ctx!.moveTo(b.pts[0].x, b.pts[0].y)
         for (let j = 1; j < Math.min(drawLen, b.pts.length); j++) ctx!.lineTo(b.pts[j].x, b.pts[j].y)
         ctx!.stroke()
 
-        // Draw branches (offset from main to avoid double-draw)
+        // Branches
         for (const br of b.branches) {
-          const brLen = Math.max(2, Math.floor(br.pts.length * drawProgress * 0.85))
-          const ba = alpha * 0.55
-          const bgw = glowW * 0.4
+          const brLen = Math.max(2, Math.floor(br.length * drawProgress * 0.8))
+          const ba = alpha * 0.45
+          const bgw = glowW * 0.35
 
           ctx!.strokeStyle = `rgba(0, 212, 255, ${ba})`
           ctx!.lineWidth = bgw
-          ctx!.shadowColor = `rgba(0, 212, 255, ${ba * 0.5})`
-          ctx!.shadowBlur = shadowBlur * 0.4
+          ctx!.shadowColor = `rgba(0, 212, 255, ${ba * 0.4})`
+          ctx!.shadowBlur = shadowBlur * 0.35
           ctx!.beginPath()
-          ctx!.moveTo(br.pts[0].x, br.pts[0].y)
-          for (let j = 1; j < Math.min(brLen, br.pts.length); j++) ctx!.lineTo(br.pts[j].x, br.pts[j].y)
+          ctx!.moveTo(br[0].x, br[0].y)
+          for (let j = 1; j < Math.min(brLen, br.length); j++) ctx!.lineTo(br[j].x, br[j].y)
           ctx!.stroke()
 
-          // Sub-branches
-          for (const sub of br.subBranches) {
-            const subLen = Math.max(2, Math.floor(sub.length * drawProgress * 0.7))
-            ctx!.strokeStyle = `rgba(139, 92, 246, ${ba * 0.4})`
-            ctx!.lineWidth = bgw * 0.5
-            ctx!.shadowColor = `rgba(139, 92, 246, ${ba * 0.3})`
-            ctx!.shadowBlur = shadowBlur * 0.2
-            ctx!.beginPath()
-            ctx!.moveTo(sub[0].x, sub[0].y)
-            for (let j = 1; j < Math.min(subLen, sub.length); j++) ctx!.lineTo(sub[j].x, sub[j].y)
-            ctx!.stroke()
-          }
+          // Branch core
+          ctx!.strokeStyle = `rgba(180, 220, 255, ${ba * 0.8})`
+          ctx!.lineWidth = 0.8
+          ctx!.shadowBlur = 0
+          ctx!.beginPath()
+          ctx!.moveTo(br[0].x, br[0].y)
+          for (let j = 1; j < Math.min(brLen, br.length); j++) ctx!.lineTo(br[j].x, br[j].y)
+          ctx!.stroke()
         }
 
-        // Sparks at tip during leader phase
-        if (progress < 0.3) {
-          const tipIdx = Math.min(drawLen - 1, b.pts.length - 1)
-          if (tipIdx > 0) {
-            emitSparks(sparksRef.current, b.pts[tipIdx].x, b.pts[tipIdx].y, 3, 190)
-          }
+        // Tip sparks during leader
+        if (progress < 0.25 && drawLen < b.pts.length) {
+          emitSparks(sparksRef.current, b.pts[Math.min(drawLen, b.pts.length - 1)].x, b.pts[Math.min(drawLen, b.pts.length - 1)].y, 2)
         }
       }
 
-      // Re-draw bolts with glow for full-bolt phase (above handles it already)
-
       // Mouse sparks
       if (mouseRef.current.active && Math.random() > 0.5) {
-        emitSparks(sparksRef.current, mouseRef.current.x, mouseRef.current.y, 3)
+        emitSparks(sparksRef.current, mouseRef.current.x, mouseRef.current.y, 4)
       }
 
       // Draw sparks
@@ -483,30 +380,29 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         s.y += s.vy
         s.vy += 0.04
         const lr = s.life / s.maxLife
-        const alpha = (1 - lr) * 0.85
-        ctx!.fillStyle = `hsla(${s.hue}, 80%, 60%, ${alpha})`
-        ctx!.shadowColor = `hsla(${s.hue}, 80%, 60%, 0.5)`
+        const a = (1 - lr) * 0.85
+        ctx!.fillStyle = `rgba(180, 220, 255, ${a})`
+        ctx!.shadowColor = `rgba(0, 212, 255, 0.5)`
         ctx!.shadowBlur = 8
         ctx!.beginPath()
-        ctx!.arc(s.x, s.y, 0.8 * (1 - lr * 0.5), 0, Math.PI * 2)
+        ctx!.arc(s.x, s.y, 0.9 * (1 - lr * 0.5), 0, Math.PI * 2)
         ctx!.fill()
       }
       ctx!.shadowBlur = 0
     }
 
-    // Pre-seed bolts
+    // Pre-seed
     for (let i = 0; i < 3; i++) {
       const origins = getCardPositions(w, h)
       if (origins.length > 0) {
         const from = origins[Math.floor(Math.random() * origins.length)]
         const to = { x: Math.random() * w, y: Math.random() * h }
-        const main = fractalBolt(from, to, 0.2, 7)
+        const main = jaggedBolt(from, to, 0.7)
         boltsRef.current.push({
           pts: main,
-          branches: makeBranchesRealistic(main, 0.2, 6),
-          life: Math.random() * 0.3,
-          maxLife: 0.7 + Math.random() * 0.5,
-          completed: false,
+          branches: makeBranchesJagged(main, 0.7),
+          life: Math.random() * 0.25,
+          maxLife: 0.6 + Math.random() * 0.4,
         })
       }
     }
@@ -540,29 +436,20 @@ function CssFallback() {
 
     function spawnLine(x: number, y: number) {
       if (!el) return
-      const wrapper = document.createElement("div")
       const angle = Math.random() * Math.PI * 2
       const len = 80 + Math.random() * 200
-
+      const wrapper = document.createElement("div")
       wrapper.style.cssText = `
-        position: fixed;
-        left: ${x}px;
-        top: ${y}px;
-        width: ${len}px;
-        height: 3px;
-        transform-origin: left center;
-        transform: rotate(${angle}rad);
-        pointer-events: none;
-        z-index: 0;
+        position: fixed; left:${x}px; top:${y}px; width:${len}px; height:3px;
+        transform-origin: left center; transform:rotate(${angle}rad);
+        pointer-events:none; z-index:0;
       `
       const inner = document.createElement("div")
       inner.style.cssText = `
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, rgba(0,212,255,0.95), transparent);
-        box-shadow: 0 0 20px rgba(0,212,255,0.7), 0 0 40px rgba(0,212,255,0.3);
-        border-radius: 2px;
-        animation: cssBoltInner 0.9s ease-out forwards;
+        width:100%; height:100%;
+        background:linear-gradient(90deg,rgba(0,212,255,0.95),transparent);
+        box-shadow:0 0 20px rgba(0,212,255,0.7),0 0 40px rgba(0,212,255,0.3);
+        border-radius:2px; animation: cssBoltInner 0.9s ease-out forwards;
       `
       wrapper.appendChild(inner)
       el.appendChild(wrapper)
@@ -570,54 +457,42 @@ function CssFallback() {
 
       if (Math.random() > 0.6) {
         const w2 = document.createElement("div")
-        w2.style.cssText = wrapper.style.cssText
-        w2.style.transform = `rotate(${angle + 0.3}rad)`
+        w2.style.cssText = `position:fixed; left:${x}px; top:${y}px; width:${len*0.6}px; height:2px; transform-origin:left center; transform:rotate(${angle+0.3}rad); pointer-events:none; z-index:0;`
         const i2 = document.createElement("div")
-        i2.style.cssText = `
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, rgba(139,92,246,0.8), transparent);
-          box-shadow: 0 0 15px rgba(139,92,246,0.5), 0 0 30px rgba(139,92,246,0.2);
-          border-radius: 2px;
-          animation: cssBoltInner 0.7s ease-out forwards;
-        `
+        i2.style.cssText = `width:100%; height:100%; background:linear-gradient(90deg,rgba(139,92,246,0.8),transparent); box-shadow:0 0 15px rgba(139,92,246,0.5),0 0 30px rgba(139,92,246,0.2); border-radius:2px; animation:cssBoltInner 0.7s ease-out forwards;`
         w2.appendChild(i2)
         el.appendChild(w2)
         setTimeout(() => w2.remove(), 600)
       }
     }
 
-    function randomCardSpawn() {
+    function randomSpawn() {
       const rects = document.querySelectorAll<HTMLElement>('[class*="card"], section, article, [class*="hero"], nav, footer')
-      if (rects.length === 0) return
-      const r = rects[Math.floor(Math.random() * rects.length)].getBoundingClientRect()
-      spawnLine(r.left + r.width * 0.5, r.top + r.height * 0.5)
-      if (Math.random() > 0.5) {
-        spawnLine(Math.random() * window.innerWidth, Math.random() * window.innerHeight)
+      if (rects.length) {
+        const r = rects[Math.floor(Math.random() * rects.length)].getBoundingClientRect()
+        spawnLine(r.left + r.width * 0.5, r.top + r.height * 0.5)
       }
+      if (Math.random() > 0.5) spawnLine(Math.random() * window.innerWidth, Math.random() * window.innerHeight)
     }
 
     const onClick = (e: MouseEvent) => {
-      for (let i = 0; i < 5; i++) {
-        setTimeout(() => spawnLine(e.clientX, e.clientY), i * 80)
-      }
+      for (let i = 0; i < 5; i++) setTimeout(() => spawnLine(e.clientX, e.clientY), i * 80)
     }
 
     let scrollTimer: ReturnType<typeof setTimeout>
     const onScroll = () => {
       clearTimeout(scrollTimer)
-      scrollTimer = setTimeout(randomCardSpawn, 150)
+      scrollTimer = setTimeout(randomSpawn, 150)
     }
 
     window.addEventListener("click", onClick)
     window.addEventListener("scroll", onScroll, { passive: true })
-
-    const natTimer = setInterval(randomCardSpawn, 2000)
+    const t = setInterval(randomSpawn, 2000)
 
     return () => {
       window.removeEventListener("click", onClick)
       window.removeEventListener("scroll", onScroll)
-      clearInterval(natTimer)
+      clearInterval(t)
     }
   }, [])
 
@@ -626,34 +501,17 @@ function CssFallback() {
       <div ref={linesRef} />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,212,255,0.05),transparent_60%)] animate-pulse" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(139,92,246,0.03),transparent_50%)]" />
-      <style>{`
-        @keyframes cssBoltInner {
-          0% { opacity: 1; transform: scaleX(0); }
-          15% { opacity: 1; transform: scaleX(1.3); }
-          35% { opacity: 0.6; transform: scaleX(1); }
-          100% { opacity: 0; transform: scaleX(0.6); }
-        }
-      `}</style>
+      <style>{`@keyframes cssBoltInner{0%{opacity:1;transform:scaleX(0)}15%{opacity:1;transform:scaleX(1.3)}35%{opacity:0.6;transform:scaleX(1)}100%{opacity:0;transform:scaleX(0.6)}}`}</style>
     </div>
   )
 }
 
 export default function ElectricEffect() {
   const [webgpu, setWebgpu] = useState<boolean | null>(null)
-
-  useEffect(() => {
-    setWebgpu(hasWebGPU())
-  }, [])
-
+  useEffect(() => { setWebgpu(hasWebGPU()) }, [])
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
-  if (webgpu === null) {
-    return <div className="fixed inset-0 -z-10 pointer-events-none bg-neon-blue/[0.02]" />
-  }
-
-  if (!webgpu) {
-    return <CssFallback />
-  }
-
+  if (webgpu === null) return <div className="fixed inset-0 -z-10 pointer-events-none bg-neon-blue/[0.02]" />
+  if (!webgpu) return <CssFallback />
   return <CanvasLightning onRef={(el) => { canvasRef.current = el }} />
 }
