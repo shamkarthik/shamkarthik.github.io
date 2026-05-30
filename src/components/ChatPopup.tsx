@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { CreateMLCEngine } from "@mlc-ai/web-llm"
+import { CreateMLCEngine, type ChatCompletionMessageParam } from "@mlc-ai/web-llm"
 
 const MODEL_ID = "SmolLM2-360M-Instruct-q4f16_1-MLC"
 
@@ -131,11 +131,11 @@ export default function ChatPopup() {
     setMessages((prev) => [...prev, assistantMsg])
 
     try {
-      const history = [
+      const history: ChatCompletionMessageParam[] = [
         { role: "system", content: SYSTEM_PROMPT },
         ...messages,
         userMsg,
-      ].map((m) => ({ role: m.role, content: m.content }))
+      ]
 
       const chunks = await engineRef.current!.chat.completions.create({
         messages: history,
