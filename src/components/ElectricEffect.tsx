@@ -141,8 +141,13 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
 
     const onClick = (e: MouseEvent) => {
       const cx = e.clientX, cy = e.clientY
-      const top = { x: cx + (Math.random() - 0.5) * 200, y: cy - 200 - Math.random() * 200 }
-      const main = boltPath({ x: cx, y: cy }, top, 100 + Math.random() * 60)
+      const angle = Math.random() * Math.PI * 2
+      const dist = 150 + Math.random() * 250
+      const target = {
+        x: cx + Math.cos(angle) * dist,
+        y: cy + Math.sin(angle) * dist,
+      }
+      const main = boltPath({ x: cx, y: cy }, target, 100 + Math.random() * 60)
       boltsRef.current.push({
         pts: main,
         branches: makeBranches(main, 100),
@@ -160,11 +165,13 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         const origins = getCardPositions(w, h)
         if (origins.length > 0) {
           const origin = origins[Math.floor(Math.random() * origins.length)]
-          const top = {
-            x: origin.x + (Math.random() - 0.5) * 150,
-            y: origin.y - 80 - Math.random() * 150,
+          const angle = Math.random() * Math.PI * 2
+          const dist = 80 + Math.random() * 180
+          const target = {
+            x: origin.x + Math.cos(angle) * dist,
+            y: origin.y + Math.sin(angle) * dist,
           }
-          const main = boltPath(origin, top, 60 + Math.random() * 40)
+          const main = boltPath(origin, target, 60 + Math.random() * 40)
           boltsRef.current.push({
             pts: main,
             branches: makeBranches(main, 60),
@@ -182,11 +189,13 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
       const origins = getCardPositions(w, h)
       if (origins.length > 0) {
         const origin = origins[Math.floor(Math.random() * origins.length)]
-        const upward = Math.random() > 0.5
-        const target = upward
-          ? { x: origin.x + (Math.random() - 0.5) * 200, y: origin.y - 100 - Math.random() * 200 }
-          : { x: origin.x + (Math.random() - 0.5) * 200, y: origin.y + 100 + Math.random() * 200 }
-        const main = boltPath(upward ? origin : origin, upward ? target : target, 80 + Math.random() * 50)
+        const angle = Math.random() * Math.PI * 2
+        const dist = 100 + Math.random() * 250
+        const target = {
+          x: origin.x + Math.cos(angle) * dist,
+          y: origin.y + Math.sin(angle) * dist,
+        }
+        const main = boltPath(origin, target, 80 + Math.random() * 50)
         boltsRef.current.push({
           pts: main,
           branches: makeBranches(main, 80),
