@@ -102,6 +102,7 @@ export default function ChatPopup() {
           parallelDownloads: 5,
           n_batch: 128,
           n_ctx,
+          n_gpu_layers: 99,
           progressCallback: (p) => {
             if (!cancelled) {
               const pct = Math.round((p.loaded / p.total) * 100)
