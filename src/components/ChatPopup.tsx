@@ -95,13 +95,11 @@ export default function ChatPopup() {
 
         const n_ctx = highEnd ? 8192 : 4096
         const max_tokens = highEnd ? 4096 : 2048
-        const n_threads = highEnd ? Math.min(cores, 8) : Math.min(cores, 4)
         configRef.current = { max_tokens }
 
         await wllama.loadModelFromUrl(MODEL_URL, {
-          n_batch: Math.min(n_ctx, 1024),
+          n_batch: 128,
           n_ctx,
-          n_threads,
           progressCallback: (p) => {
             if (!cancelled) {
               const pct = Math.round((p.loaded / p.total) * 100)

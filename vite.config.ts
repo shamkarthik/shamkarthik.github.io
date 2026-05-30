@@ -10,4 +10,10 @@ export default defineConfig({
     tailwindcss(),
   ],
   base: "/",
+  server: {
+    headers: {
+      "Cross-Origin-Embedder-Policy": "require-corp",
+      "Cross-Origin-Opener-Policy": "same-origin",
+    },
+  },
 })
