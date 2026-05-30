@@ -62,7 +62,7 @@ export default function ChatPopup() {
           setMessages([
             {
               role: "assistant",
-              content: "Hey! I'm an AI agent with knowledge about Sham Karthik S. Ask me anything about his experience, skills, or projects!",
+content: "Hey! I'm an AI agent who knows about Sham Karthik S. Ask me anything about his experience, skills, or projects!",
             },
           ])
         }
@@ -147,7 +147,7 @@ export default function ChatPopup() {
     setMessages([
       {
         role: "assistant",
-        content: "Hey! I'm an AI agent with knowledge about Sham Karthik S. Ask me anything about his experience, skills, or projects!",
+        content: "Hey! I'm an AI agent who knows about Sham Karthik S. Ask me anything about his experience, skills, or projects!",
       },
     ])
   }
