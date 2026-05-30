@@ -87,6 +87,7 @@ export default function ChatPopup() {
     ;(async () => {
       try {
         const wllama = new Wllama({ default: WLLAMA_CDN })
+        wllama.setCompat('default')
 
         const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent)
         const cores = navigator.hardwareConcurrency || 4
