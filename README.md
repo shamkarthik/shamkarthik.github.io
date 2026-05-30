@@ -1,4 +1,4 @@
-# shamkarthik.github.io
+# portfolio
 
 Personal portfolio — Sham Karthik S · Senior AI/ML Engineer · Full-Stack Software Engineer
 
