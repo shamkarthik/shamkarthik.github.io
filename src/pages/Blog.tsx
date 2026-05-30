@@ -34,7 +34,7 @@ export default function Blog() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="mb-2 text-4xl font-bold tracking-tight sm:text-6xl">
+            <h1 className="mb-2 break-words text-3xl font-bold tracking-tight sm:text-6xl">
               Blog & <span className="text-gradient">Articles</span>
             </h1>
             <p className="mb-8 text-lg text-secondary">My writings on Medium</p>
@@ -59,16 +59,16 @@ export default function Blog() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1, duration: 0.4 }}
-                  className="block rounded-xl border border-card bg-card p-6 transition-all duration-300 hover:border-neon-blue/30"
+                  className="block rounded-xl border border-card bg-card p-4 sm:p-6 transition-all duration-300 hover:border-neon-blue/30"
                 >
                   <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
-                    <span>{new Date(article.pubDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+                    <span className="whitespace-nowrap">{new Date(article.pubDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
                     {article.categories.length > 0 && (
                       <>
-                        <span>·</span>
-                        <div className="flex gap-1.5">
+                        <span className="hidden sm:inline">·</span>
+                        <div className="flex flex-wrap gap-1.5">
                           {article.categories.map((c) => (
-                            <span key={c} className="rounded-md bg-hover px-2 py-0.5 text-xs text-secondary">
+                            <span key={c} className="max-w-[120px] truncate rounded-md bg-hover px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs text-secondary">
                               {c}
                             </span>
                           ))}
@@ -76,7 +76,7 @@ export default function Blog() {
                       </>
                     )}
                   </div>
-                  <h2 className="mb-2 break-words text-lg font-semibold text-primary transition-colors group-hover:text-neon-blue">
+                  <h2 className="mb-2 break-words text-base sm:text-lg font-semibold text-primary transition-colors group-hover:text-neon-blue">
                     {article.title}
                   </h2>
                   <p
