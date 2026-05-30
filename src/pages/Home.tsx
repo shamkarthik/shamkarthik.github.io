@@ -2,6 +2,7 @@ import { useState } from "react"
 import Hero from "../components/Hero"
 import SkillsSection from "../components/SkillsSection"
 import Timeline from "../components/Timeline"
+import BarChart from "../components/BarChart"
 import { motion } from "framer-motion"
 import { projects } from "../data/projects"
 import { features, categories } from "../data/features"
@@ -16,6 +17,13 @@ const categoryColors: Record<string, string> = {
   Observability: "border-pink-500/30 text-pink-400 bg-pink-500/5",
   DevOps: "border-cyan-500/30 text-cyan-400 bg-cyan-500/5",
 }
+
+const catBarData = [
+  { label: "ML / AI", value: 5, color: "bg-neon-purple" },
+  { label: "User Features", value: 5, color: "bg-neon-green" },
+  { label: "Backend", value: 3, color: "bg-neon-blue" },
+  { label: "Security", value: 2, color: "bg-red-500" },
+]
 
 export default function Home() {
   const [showFeatures, setShowFeatures] = useState(false)
@@ -106,6 +114,29 @@ export default function Home() {
               improving responsiveness by <strong className="text-neon-green">30%</strong>.
             </p>
           </motion.div>
+
+          <div className="mb-8 grid gap-6 lg:grid-cols-2">
+            <div className="rounded-xl border border-dark-border bg-dark-card p-5">
+              <BarChart data={catBarData} title="Features by Category" suffix="" />
+            </div>
+            <div className="rounded-xl border border-dark-border bg-dark-card p-5">
+              <h4 className="mb-4 text-sm font-semibold text-gray-300">Impact Metrics</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { label: "Cloud Dependency", value: "100%", sub: "Reduction", color: "text-neon-green" },
+                  { label: "App Responsiveness", value: "30%", sub: "Improvement", color: "text-neon-blue" },
+                  { label: "UI Implementation", value: "25%", sub: "Faster", color: "text-neon-purple" },
+                  { label: "Inference Accuracy", value: "95%", sub: "Detection Rate", color: "text-neon-green" },
+                ].map((m) => (
+                  <div key={m.label} className="rounded-lg bg-dark-hover p-4 text-center">
+                    <p className={`text-xl font-bold ${m.color}`}>{m.value}</p>
+                    <p className="mt-0.5 text-xs text-gray-500">{m.sub}</p>
+                    <p className="text-[10px] text-gray-600">{m.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
           <button
             onClick={() => setShowFeatures(!showFeatures)}
