@@ -89,15 +89,15 @@ function drawBolt(
 ) {
   ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`
   ctx.lineWidth = glowW
-  ctx.shadowColor = "rgba(0, 212, 255, 0.4)"
-  ctx.shadowBlur = 20
+  ctx.shadowColor = "rgba(0, 212, 255, 0.35)"
+  ctx.shadowBlur = 12
   ctx.beginPath()
   ctx.moveTo(pts[0].x, pts[0].y)
   for (let j = 1; j < pts.length; j++) ctx.lineTo(pts[j].x, pts[j].y)
   ctx.stroke()
 
   ctx.strokeStyle = `rgba(180, 240, 255, ${alpha * 0.8})`
-  ctx.lineWidth = 2
+  ctx.lineWidth = 1
   ctx.shadowBlur = 0
   ctx.beginPath()
   ctx.moveTo(pts[0].x, pts[0].y)
@@ -247,11 +247,11 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
 
         const progress = b.life / b.maxLife
         const alpha = (1 - progress) * 0.7
-        const glowW = 5 + (1 - progress) * 12
+        const glowW = 1.5 + (1 - progress) * 3
 
         drawBolt(ctx!, b.pts, alpha, glowW)
         for (const branch of b.branches) {
-          drawBolt(ctx!, branch, alpha * 0.6, glowW * 0.5)
+          drawBolt(ctx!, branch, alpha * 0.5, glowW * 0.4)
         }
 
         if (progress < 0.3) {
@@ -279,7 +279,7 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         ctx!.shadowColor = "rgba(0, 212, 255, 0.5)"
         ctx!.shadowBlur = 6
         ctx!.beginPath()
-        ctx!.arc(s.x, s.y, 1.5 * (1 - lr * 0.5), 0, Math.PI * 2)
+        ctx!.arc(s.x, s.y, 0.8 * (1 - lr * 0.5), 0, Math.PI * 2)
         ctx!.fill()
       }
       ctx!.shadowBlur = 0
