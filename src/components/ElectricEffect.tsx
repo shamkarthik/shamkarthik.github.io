@@ -314,18 +314,86 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
   )
 }
 
-/** CSS-based fallback for non-WebGPU browsers */
+/** CSS-based fallback when WebGPU is not available */
 function CssFallback() {
+  const linesRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = linesRef.current
+    if (!el) return
+
+    function spawnLine(x: number, y: number) {
+      if (!el) return
+      const wrapper = document.createElement("div")
+      const angle = Math.random() * Math.PI * 2
+      const len = 60 + Math.random() * 140
+
+      wrapper.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        width: ${len}px;
+        height: 2px;
+        transform-origin: left center;
+        transform: rotate(${angle}rad);
+        pointer-events: none;
+        z-index: 0;
+      `
+      const inner = document.createElement("div")
+      inner.style.cssText = `
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(0,212,255,0.9), transparent);
+        box-shadow: 0 0 10px rgba(0,212,255,0.5), 0 0 20px rgba(0,212,255,0.2);
+        border-radius: 1px;
+        animation: cssBoltInner 0.5s ease-out forwards;
+      `
+      wrapper.appendChild(inner)
+      el.appendChild(wrapper)
+      setTimeout(() => wrapper.remove(), 600)
+    }
+
+    function randomCardSpawn() {
+      const rects = document.querySelectorAll<HTMLElement>('[class*="card"], section, article')
+      if (rects.length === 0) return
+      const r = rects[Math.floor(Math.random() * rects.length)].getBoundingClientRect()
+      spawnLine(r.left + r.width * 0.5, r.top + r.height * 0.5)
+    }
+
+    const onClick = (e: MouseEvent) => {
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => spawnLine(e.clientX, e.clientY), i * 80)
+      }
+    }
+
+    let scrollTimer: ReturnType<typeof setTimeout>
+    const onScroll = () => {
+      clearTimeout(scrollTimer)
+      scrollTimer = setTimeout(randomCardSpawn, 300)
+    }
+
+    window.addEventListener("click", onClick)
+    window.addEventListener("scroll", onScroll, { passive: true })
+
+    const natTimer = setInterval(randomCardSpawn, 4000)
+
+    return () => {
+      window.removeEventListener("click", onClick)
+      window.removeEventListener("scroll", onScroll)
+      clearInterval(natTimer)
+    }
+  }, [])
+
   return (
     <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+      <div ref={linesRef} />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,212,255,0.03),transparent_60%)] animate-pulse" />
-      <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-neon-blue/5 to-transparent" style={{ animation: "electricFlicker 3s ease-in-out infinite" }} />
-      <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-neon-blue/5 to-transparent" style={{ animation: "electricFlicker 3s ease-in-out infinite 1.5s" }} />
       <style>{`
-        @keyframes electricFlicker {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
-          25%, 75% { opacity: 0.1; }
+        @keyframes cssBoltInner {
+          0% { opacity: 0.9; transform: scaleX(0); }
+          15% { opacity: 1; transform: scaleX(1.1); }
+          30% { opacity: 0.5; transform: scaleX(1); }
+          100% { opacity: 0; transform: scaleX(1); }
         }
       `}</style>
     </div>

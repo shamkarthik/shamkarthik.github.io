@@ -91,12 +91,12 @@ export default function ServiceCards() {
           transition={{ delay: 0.5, duration: 0.6 }}
           className="mt-12 text-center"
         >
-          <div className="inline-flex items-center gap-3 rounded-xl border border-neon-blue/20 bg-gradient-to-r from-neon-blue/5 via-transparent to-neon-purple/5 px-8 py-5 text-base italic shadow-[0_0_30px_rgba(0,212,255,0.08)]">
-            <svg className="h-6 w-6 flex-shrink-0 text-neon-blue" viewBox="0 0 24 24" fill="currentColor">
+          <div className="inline-flex items-center gap-4 rounded-xl border border-neon-blue/20 bg-gradient-to-r from-neon-blue/5 via-transparent to-neon-purple/5 px-8 py-5 text-base shadow-[0_0_30px_rgba(0,212,255,0.08)] sm:text-lg">
+            <svg className="h-7 w-7 flex-shrink-0 text-neon-blue" viewBox="0 0 24 24" fill="currentColor">
               <path d="M13 2L4.093 12.687a.75.75 0 00.553 1.313H12l-1 8 8.907-10.687A.75.75 0 0019.354 10H12l1-8z"/>
             </svg>
-            <span className="text-primary">
-              "Run, Barry. Run." — <strong className="text-neon-blue not-italic">That's the energy I bring to every project.</strong>
+            <span className="text-primary font-medium">
+              "Run, Barry. Run." — <span className="text-neon-blue font-bold">That's the energy I bring to every project.</span>
             </span>
           </div>
         </motion.div>
