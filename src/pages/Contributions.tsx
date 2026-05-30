@@ -28,7 +28,7 @@ export default function Contributions() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl lg:text-6xl">
               GitHub <span className="text-gradient">Contributions</span>
             </h1>
             <p className="mb-12 text-lg text-secondary">84 contributions in the last year · 26 repositories</p>
@@ -119,4 +119,5 @@ export default function Contributions() {
     </div>
   )
 }
+
 

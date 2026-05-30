@@ -12,10 +12,10 @@ export default function SkillsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
+          <h2 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
             Technical <span className="text-gradient">Skills</span>
           </h2>
-          <p className="mb-12 text-secondary text-base">Technologies I work with daily</p>
+          <p className="mb-12 text-lg text-secondary">Technologies I work with daily</p>
         </motion.div>
 
         <div className="mb-12 grid gap-8 lg:grid-cols-5">
@@ -81,6 +81,7 @@ export default function SkillsSection() {
     </section>
   )
 }
+
 
 
 

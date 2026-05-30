@@ -10,10 +10,10 @@ export default function Contact() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
+            <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
               Get in <span className="text-gradient">Touch</span>
             </h1>
-            <p className="mb-12 text-secondary text-base">Have a question or want to collaborate?</p>
+            <p className="mb-12 text-lg text-secondary">Have a question or want to collaborate?</p>
           </motion.div>
 
           <motion.form
@@ -95,6 +95,7 @@ export default function Contact() {
     </div>
   )
 }
+
 
 
 

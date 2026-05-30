@@ -11,10 +11,10 @@ export default function Timeline() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
+          <h2 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
             Experience <span className="text-gradient">Timeline</span>
           </h2>
-          <p className="mb-12 text-secondary text-base">My professional journey</p>
+          <p className="mb-12 text-lg text-secondary">My professional journey</p>
         </motion.div>
 
         <div className="relative space-y-8 before:absolute before:left-[19px] before:top-2 before:h-[calc(100%-2rem)] before:w-[1px] before:bg-card">
@@ -66,6 +66,7 @@ export default function Timeline() {
     </section>
   )
 }
+
 
 
 

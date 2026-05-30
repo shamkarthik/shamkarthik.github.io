@@ -45,10 +45,10 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
+            <h2 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
               Open Source & <span className="text-gradient">Projects</span>
             </h2>
-            <p className="mb-12 text-secondary text-base">Things I've built and shared</p>
+            <p className="mb-12 text-lg text-secondary">Things I've built and shared</p>
           </motion.div>
 
           <div className="grid gap-6 sm:grid-cols-2">
@@ -91,7 +91,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
+            <h2 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl">
               AIGronomist <span className="text-gradient">Features</span>
             </h2>
             <p className="mb-2 text-secondary">On-Device Edge AI Mobile App — Tiger Analytics</p>
@@ -208,6 +208,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 
 

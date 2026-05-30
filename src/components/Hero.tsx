@@ -15,12 +15,12 @@ export default function Hero() {
           Senior AI/ML Engineer @ Tiger Analytics
         </div>
 
-        <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+        <h1 className="mb-4 text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl">
           Sham{" "}
           <span className="text-gradient">Karthik S</span>
         </h1>
 
-        <p className="mx-auto mb-8 max-w-2xl text-xl leading-relaxed text-secondary">
+        <p className="mx-auto mb-8 max-w-3xl text-2xl leading-relaxed text-secondary">
           Building on-device AI systems, computer vision pipelines, and cross-platform mobile experiences.
           Specializing in edge inference, native modules, and production mobile apps.
         </p>
@@ -92,6 +92,7 @@ export default function Hero() {
     </section>
   )
 }
+
 
 
 
