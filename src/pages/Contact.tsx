@@ -47,6 +47,40 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="mt-6"
+          >
+            <div className="rounded-xl border border-card bg-card p-6 text-center">
+              <p className="mb-4 text-sm text-secondary">View or download my resume to learn more about my experience.</p>
+              <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                <a
+                  href="/one_page.pdf"
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg bg-neon-purple px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-neon-purple/90 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  View Resume
+                </a>
+                <a
+                  href="/one_page.pdf"
+                  download
+                  className="inline-flex items-center gap-2 rounded-lg border border-neon-purple/30 px-6 py-3 text-sm font-medium text-neon-purple transition-all duration-200 hover:bg-neon-purple/10"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download Resume
+                </a>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
             className="mt-12"
           >
