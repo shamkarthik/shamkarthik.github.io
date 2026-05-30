@@ -1,41 +1,81 @@
-# Sham Karthik S
+# Sham Karthik S — Senior AI/ML Engineer
 
-## Who is Sham Karthik S?
-Sham Karthik S is a Senior AI/ML Engineer at Tiger Analytics (since Jan 2023) based in Chennai, India. He specializes in on-device artificial intelligence, computer vision, edge inference, cross-platform mobile development, and full-stack web engineering.
+> On-device AI · Computer Vision · Edge Inference · Cross-platform Mobile · Full-stack Web
 
-## Current Role
-- **Senior AI/ML Engineer** at Tiger Analytics (Jan 2023 – Present)
-  - Building production AI/ML systems
-  - On-device inference and edge deployment
-  - Cross-platform mobile solutions
+## Profile
 
-## Previous Experience
-- **Software Engineer** at Hexaware Technologies
+Sham Karthik S is a Senior AI/ML Engineer at Tiger Analytics (Jan 2023–Present) based in Chennai, India. He builds production AI systems deployed on mobile and edge devices, with deep expertise in on-device computer vision, fraud detection, and cross-platform engineering. Previously a Software Engineer at Hexaware Technologies.
 
-## Technical Skills
-- **Languages**: TypeScript, Python, C++, Dart, Kotlin
-- **Frontend**: React, Tailwind CSS, Framer Motion
-- **Mobile**: React Native, Flutter, Kotlin Multiplatform
-- **AI/ML**: ONNX, TensorFlow Lite, Computer Vision, Edge Inference
-- **Backend/Cloud**: Node.js, Azure, Docker, CI/CD
-- **Tools**: Git, VS Code, Postman, Figma
+## Core Facts
 
-## Key Projects
+- Full name: Sham Karthik S
+- Title: Senior AI/ML Engineer
+- Employer: Tiger Analytics (Jan 2023–Present)
+- Previous: Software Engineer at Hexaware Technologies (total 4 years)
+- Location: Chennai, India
+- Languages: English (fluent), Tamil (native)
+- Email: shamkarthik88@gmail.com
+- GitHub: https://github.com/shamkarthik
+- LinkedIn: https://linkedin.com/in/sham-karthik-s
+- Medium: https://medium.com/@shamkarthik88
+- Resume PDF: https://shamkarthik.github.io/ShamkarthikS.pdf
+
+## Projects (9+)
+
+### Work Projects at Tiger Analytics
 1. **AIGronomist** — On-device potato disease detection using computer vision models deployed on mobile devices
-2. **PepIris** — Fraud detection system leveraging machine learning for financial transaction monitoring
-3. **TLDR-ON** — Chrome extension for AI-powered text summarization
-4. **PayFinder** — Payment discovery and management tool
+2. **PepIris** — On-device fraud detection CV system for financial transaction monitoring
+3. **Mobile R&D — GenAI** — Generative AI research and prototyping for mobile platforms
+4. **Innovation Incrementality V2** — Incrementality measurement and innovation impact analysis
+5. **App Templates** — Cross-platform mobile application templates and architecture patterns
 
-## Languages Spoken
-- English (fluent)
-- Tamil (native)
+### Work Projects at Hexaware Technologies
+6. **RapidX** — Rapid application development framework
+7. **Automaton** — Process automation and workflow optimization system
 
-## Contact
-- **Email**: shamkarthik88@gmail.com
-- **GitHub**: https://github.com/shamkarthik
-- **LinkedIn**: https://linkedin.com/in/sham-karthik-s
-- **Medium**: https://medium.com/@shamkarthik88
-- **Portfolio**: https://shamkarthik.github.io
+### Personal Projects
+8. **TLDR-ON** — Chrome extension for AI-powered text summarization (available on Chrome Web Store)
+9. **PayFinder** — Payment discovery and management tool
 
-## Resume
-https://shamkarthik.github.io/ShamkarthikS.pdf
+## Skills
+
+- **Languages**: TypeScript/JavaScript, Python, C++, Dart, Kotlin, SQL
+- **Frontend**: React, Tailwind CSS, Framer Motion, HTML5/CSS3
+- **Mobile**: React Native, Flutter, Kotlin Multiplatform, Android (Kotlin/Java)
+- **AI/ML**: ONNX Runtime, TensorFlow Lite, Core ML, Computer Vision, Edge Inference, GenAI
+- **Backend/Cloud**: Node.js, Azure, Docker, CI/CD (GitHub Actions), REST APIs
+- **Tools**: Git, VS Code, Postman, Figma, Firebase, Webpack/Vite
+
+## Site Structure
+
+This is a single-page React app (Vite + Tailwind CSS v4 + Framer Motion) deployed at https://shamkarthik.github.io.
+
+### Pages
+- **`/` (Home)** — Hero section, featured projects, ServiceCards, SkillsSection, Timeline, impact metrics
+- **`/blog`** — Latest Medium articles auto-fetched from RSS feed
+- **`/contact`** — Contact info, resume download, email and LinkedIn links
+- **`/contributions`** — GitHub contribution graph, GitHub stats, recent activity
+
+### Technical Stack
+- React 19 + TypeScript
+- Vite (build tool)
+- Tailwind CSS v4 (utility-first CSS)
+- Framer Motion (animations)
+- React Router (client-side routing)
+- Canvas API (ElectricEffect lightning animation)
+- RSS-to-JSON (Medium feed integration)
+
+## Features
+
+- **Electric lightning effect** — Canvas-based branched lightning bolts that animate from interactive page elements. Falls back to CSS glow animation if WebGPU is unavailable.
+- **Dark/Light theme** — Full theme support via `data-theme` attribute on `<html>`.
+- **AI Chat** — WebLLM-powered local AI chat (GPT-2/Phi-3) running entirely in the browser via WebGPU. No server, no API key needed. Sham's personal AI agent with full knowledge of his background.
+- **Animated counters** — Impact metrics animate on scroll.
+- **Responsive** — Works on mobile, tablet, and desktop.
+
+## Special Notes
+
+- This is a portfolio site — all content is about Sham Karthik S.
+- The site uses client-side rendering with React Router (HashRouter).
+- Blog content is pulled live from Medium RSS — no caching layer.
+- The chat runs 100% client-side using WebLLM; no data leaves the browser.
