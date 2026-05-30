@@ -28,12 +28,12 @@ export default function Navbar() {
                 to={l.to}
                 className={`relative rounded-full px-4 py-1.5 text-sm transition-all duration-300 ${
                   pathname === l.to
-                    ? "text-black"
+                    ? "text-primary"
                     : "text-secondary hover:text-primary"
                 }`}
               >
                 {pathname === l.to && (
-                  <span className="absolute inset-0 rounded-full bg-neon-blue shadow-[0_0_20px_rgba(0,212,255,0.4)]" />
+                  <span className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_rgba(0,212,255,0.15)]" />
                 )}
                 <span className="relative z-10">{l.label}</span>
               </Link>
@@ -61,7 +61,7 @@ export default function Navbar() {
                 }`}
               >
                 {pathname === l.to && (
-                  <span className="absolute inset-0 rounded-lg bg-neon-blue shadow-[0_0_20px_rgba(0,212,255,0.4)]" />
+                  <span className="absolute inset-0 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_rgba(0,212,255,0.15)]" />
                 )}
                 <span className="relative z-10">{l.label}</span>
               </Link>
