@@ -87,6 +87,8 @@ export default function ChatPopup() {
       try {
         const wllama = new Wllama({ default: WLLAMA_CDN })
         await wllama.loadModelFromUrl(MODEL_URL, {
+          n_batch: 512,
+          n_ctx: 512,
           progressCallback: (p) => {
             if (!cancelled) {
               const pct = Math.round((p.loaded / p.total) * 100)
@@ -150,6 +152,7 @@ export default function ChatPopup() {
         messages: history as any,
         max_tokens: 256,
         temperature: 0.3,
+        cache_prompt: true,
         stream: true,
         abortSignal: abortController.signal,
       })

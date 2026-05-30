@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 
 interface Point { x: number; y: number }
 interface Bolt { pts: Point[]; branches: Point[][]; life: number; maxLife: number }
@@ -105,10 +105,6 @@ function getCardPositions(w: number, h: number): Point[] {
     for (let i = 0; i < 6; i++) pts.push({ x: Math.random() * w, y: Math.random() * h })
   }
   return pts
-}
-
-function hasWebGPU(): boolean {
-  return 'gpu' in navigator && typeof navigator.gpu !== 'undefined'
 }
 
 function emitSparks(sparks: Spark[], x: number, y: number, count: number) {
@@ -427,91 +423,6 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
   )
 }
 
-function CssFallback() {
-  const linesRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = linesRef.current
-    if (!el) return
-
-    function spawnLine(x: number, y: number) {
-      if (!el) return
-      const angle = Math.random() * Math.PI * 2
-      const len = 80 + Math.random() * 200
-      const wrapper = document.createElement("div")
-      wrapper.style.cssText = `
-        position: fixed; left:${x}px; top:${y}px; width:${len}px; height:3px;
-        transform-origin: left center; transform:rotate(${angle}rad);
-        pointer-events:none; z-index:0;
-      `
-      const inner = document.createElement("div")
-      inner.style.cssText = `
-        width:100%; height:100%;
-        background:linear-gradient(90deg,rgba(0,212,255,0.95),transparent);
-        box-shadow:0 0 20px rgba(0,212,255,0.7),0 0 40px rgba(0,212,255,0.3);
-        border-radius:2px; animation: cssBoltInner 0.9s ease-out forwards;
-      `
-      wrapper.appendChild(inner)
-      el.appendChild(wrapper)
-      setTimeout(() => wrapper.remove(), 700)
-
-      if (Math.random() > 0.6) {
-        const w2 = document.createElement("div")
-        w2.style.cssText = `position:fixed; left:${x}px; top:${y}px; width:${len*0.6}px; height:2px; transform-origin:left center; transform:rotate(${angle+0.3}rad); pointer-events:none; z-index:0;`
-        const i2 = document.createElement("div")
-        i2.style.cssText = `width:100%; height:100%; background:linear-gradient(90deg,rgba(139,92,246,0.8),transparent); box-shadow:0 0 15px rgba(139,92,246,0.5),0 0 30px rgba(139,92,246,0.2); border-radius:2px; animation:cssBoltInner 0.7s ease-out forwards;`
-        w2.appendChild(i2)
-        el.appendChild(w2)
-        setTimeout(() => w2.remove(), 600)
-      }
-    }
-
-    function randomSpawn() {
-      const rects = document.querySelectorAll<HTMLElement>('[class*="card"], section, article, [class*="hero"], nav, footer')
-      if (rects.length) {
-        const r = rects[Math.floor(Math.random() * rects.length)].getBoundingClientRect()
-        spawnLine(r.left + r.width * 0.5, r.top + r.height * 0.5)
-      }
-      if (Math.random() > 0.5) spawnLine(Math.random() * window.innerWidth, Math.random() * window.innerHeight)
-    }
-
-    const onClick = (e: MouseEvent) => {
-      for (let i = 0; i < 5; i++) setTimeout(() => spawnLine(e.clientX, e.clientY), i * 80)
-    }
-
-    let scrollTimer: ReturnType<typeof setTimeout>
-    const onScroll = () => {
-      clearTimeout(scrollTimer)
-      scrollTimer = setTimeout(randomSpawn, 150)
-    }
-
-    window.addEventListener("click", onClick)
-    window.addEventListener("scroll", onScroll, { passive: true })
-    const t = setInterval(randomSpawn, 2000)
-
-    return () => {
-      window.removeEventListener("click", onClick)
-      window.removeEventListener("scroll", onScroll)
-      clearInterval(t)
-    }
-  }, [])
-
-  return (
-    <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-      <div ref={linesRef} />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,212,255,0.05),transparent_60%)] animate-pulse" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(139,92,246,0.03),transparent_50%)]" />
-      <style>{`@keyframes cssBoltInner{0%{opacity:1;transform:scaleX(0)}15%{opacity:1;transform:scaleX(1.3)}35%{opacity:0.6;transform:scaleX(1)}100%{opacity:0;transform:scaleX(0.6)}}`}</style>
-    </div>
-  )
-}
-
 export default function ElectricEffect() {
-  const [webgpu, setWebgpu] = useState<boolean | null>(null)
-  useEffect(() => { setWebgpu(hasWebGPU()) }, [])
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
-
-  if (webgpu === null) return <div className="fixed inset-0 -z-10 pointer-events-none bg-neon-blue/[0.02]" />
-  if (!webgpu) return <CssFallback />
-  return <CanvasLightning onRef={(el) => { canvasRef.current = el }} />
+  return <CanvasLightning onRef={() => {}} />
 }
