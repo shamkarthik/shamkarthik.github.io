@@ -33,15 +33,16 @@
 
 @layer base {
   html { font-size: var(--body-size); }
-  body {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    line-height: 1.7;
-  }
   * { scrollbar-width: thin; scrollbar-color: var(--border-color) transparent; }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
 }
 
 @layer utilities {
