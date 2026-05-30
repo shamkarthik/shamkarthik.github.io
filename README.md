@@ -53,7 +53,7 @@ npx playwright test
 
 ## Deploy
 
-Push to `master` → GitHub Actions auto-builds and deploys to GitHub Pages via `peaceiris/actions-gh-pages`.
+Push to `master` → GitHub Actions builds and deploys to GitHub Pages via `actions/deploy-pages`.
 
 ## License
 
