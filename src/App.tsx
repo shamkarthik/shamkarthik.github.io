@@ -3,7 +3,6 @@ import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import ParticleBackground from "./components/ParticleBackground"
 import Home from "./pages/Home"
-import AIGronomist from "./pages/AIGronomist"
 import Blog from "./pages/Blog"
 import Contact from "./pages/Contact"
 import Contributions from "./pages/Contributions"
@@ -16,7 +15,6 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/aigronomist" element={<AIGronomist />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/contributions" element={<Contributions />} />

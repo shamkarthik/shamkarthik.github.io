@@ -1,5 +1,4 @@
 import { motion } from "framer-motion"
-import { Link } from "react-router-dom"
 
 export default function Hero() {
   return (
@@ -26,18 +25,19 @@ export default function Hero() {
         </p>
 
         <div className="flex flex-wrap justify-center gap-3">
-          <Link
-            to="/aigronomist"
-            className="rounded-lg bg-neon-blue px-6 py-3 font-medium text-black transition-all duration-200 hover:bg-neon-blue/90 hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]"
-          >
-            View AIGronomist Features
-          </Link>
           <a
             href="https://linkedin.com/in/sham-karthik-s"
             target="_blank" rel="noopener noreferrer"
-            className="rounded-lg border border-dark-border bg-dark-card px-6 py-3 font-medium text-gray-300 transition-all duration-200 hover:border-gray-600 hover:text-white"
+            className="rounded-lg bg-neon-blue px-6 py-3 font-medium text-black transition-all duration-200 hover:bg-neon-blue/90 hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]"
           >
             LinkedIn
+          </a>
+          <a
+            href="https://github.com/shamkarthik"
+            target="_blank" rel="noopener noreferrer"
+            className="rounded-lg border border-dark-border bg-dark-card px-6 py-3 font-medium text-gray-300 transition-all duration-200 hover:border-gray-600 hover:text-white"
+          >
+            GitHub
           </a>
         </div>
 

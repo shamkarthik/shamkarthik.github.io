@@ -8,13 +8,6 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    title: "AIGronomist",
-    description: "On-device computer vision system for potato disease classification using Vision-Language Models and edge inference, reducing cloud dependency by 100%.",
-    tech: ["Flutter", "BLoC", "ONNX Runtime", "C++ FFI", "Azure", "Django", "OpenCV"],
-    url: "#aigronomist",
-    type: "work",
-  },
-  {
     title: "react-native-nitro-opencv",
     description: "High-performance OpenCV integration for React Native using Nitro Native Modules. Enables native OpenCV operations with zero JS bridge overhead.",
     tech: ["TypeScript", "OpenCV", "C++", "React Native"],
@@ -37,16 +30,9 @@ export const projects: Project[] = [
   },
   {
     title: "PayFinder",
-    description: "Cross-browser extension for finding salary estimates from survey data on employer review sites. Processes 1000+ salary data points.",
+    description: "Cross-browser extension for finding salary estimates from survey data collected from review sites. Processes 1000+ salary data points.",
     tech: ["React", "Web Scraping", "Browser Extensions"],
     url: "https://github.com/shamkarthik/payfynder",
     type: "personal",
-  },
-  {
-    title: "PepIris — On-Device CV",
-    description: "Fraud photo detection using OpenCV and sensor fusion with 95% accuracy. Panorama generation from video streams using stitching algorithms.",
-    tech: ["React Native", "C++ Turbo Modules", "OpenCV", "ONNX"],
-    url: "#",
-    type: "work",
   },
 ]

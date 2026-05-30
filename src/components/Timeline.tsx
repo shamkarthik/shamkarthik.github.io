@@ -1,11 +1,6 @@
 import { motion } from "framer-motion"
 import { experiences } from "../data/experience"
 
-const icons: Record<string, string> = {
-  "Tiger Analytics": "https://logo.clearbit.com/tigeranalytics.com",
-  "Hexaware Technologies": "https://logo.clearbit.com/hexaware.com",
-}
-
 export default function Timeline() {
   return (
     <section id="experience" className="py-24">
@@ -30,35 +25,37 @@ export default function Timeline() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15, duration: 0.4 }}
-              className="relative pl-12"
             >
-              <div className="absolute left-2.5 top-2 z-10 h-[15px] w-[15px] rounded-full border-2 border-neon-blue bg-[#0a0a0f]" />
+              <div className="relative pl-12">
+                <div className="absolute left-2.5 top-2 z-10 h-[15px] w-[15px] rounded-full border-2 border-neon-blue bg-[#0a0a0f]" />
 
-              <div className="rounded-xl border border-dark-border bg-dark-card p-6 transition-all duration-300 hover:border-neon-blue/30">
-                <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-white">{exp.role}</h3>
+                <div className="mb-2">
+                  <h3 className="text-lg font-semibold text-white">{exp.role}</h3>
+                  <div className="flex items-baseline gap-2">
                     <p className="text-sm text-neon-blue">{exp.company}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500">{exp.period}</p>
-                    <p className="text-xs text-gray-600">{exp.location}</p>
+                    <span className="text-xs text-gray-600">· {exp.period}</span>
                   </div>
                 </div>
 
-                <ul className="mb-3 space-y-1.5">
-                  {exp.highlights.map((h) => (
-                    <li key={h} className="text-sm leading-relaxed text-gray-400 before:mr-2 before:text-neon-blue before:content-['▹']">
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {exp.tech.map((t) => (
-                    <span key={t} className="rounded-md bg-neon-blue/5 px-2 py-0.5 text-xs text-neon-blue/80">
-                      {t}
-                    </span>
+                <div className="space-y-4">
+                  {exp.projects.map((proj) => (
+                    <div key={proj.name} className="rounded-xl border border-dark-border bg-dark-card p-5 transition-all duration-300 hover:border-neon-blue/30">
+                      <h4 className="mb-2 text-sm font-semibold text-gray-200">{proj.name}</h4>
+                      <ul className="mb-3 space-y-1.5">
+                        {proj.highlights.map((h) => (
+                          <li key={h} className="text-sm leading-relaxed text-gray-400 before:mr-2 before:text-neon-blue before:content-['▹']">
+                            {h}
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="flex flex-wrap gap-1.5">
+                        {proj.tech.map((t) => (
+                          <span key={t} className="rounded-md bg-neon-blue/5 px-2 py-0.5 text-xs text-neon-blue/80">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>

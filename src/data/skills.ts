@@ -1,12 +1,12 @@
 export const skills = {
-  Languages: ["TypeScript", "JavaScript", "Python", "C++", "C#", "Java", "SQL"],
-  Frameworks: ["React", "React Native", "Next.js", "NestJS", "Flutter", "Angular", "Electron"],
+  Languages: ["TypeScript", "JavaScript", "Python", "C#", "C++", "Java", "SQL"],
+  Frameworks: ["React", "Angular", "React Native", "Flutter", "NestJS", ".NET Core", "Tornado", "Electron"],
   "AI/ML": ["ONNX Runtime", "ExecuTorch", "MLC LLM", "Llama", "Gemma", "VLM", "OpenCV"],
-  "Cloud & DevOps": ["Azure", "AWS", "Docker", "GitHub Actions", "CI/CD"],
+  "Cloud & DevOps": ["Azure", "AWS", "Docker", "GitHub Actions", "Azure App Services"],
   Databases: ["MongoDB", "MariaDB", "MySQL", "Turso"],
-  "State Management": ["Redux Toolkit", "BLoC", "Context API"],
-  "UI Libraries": ["MUI", "Ant Design", "Tailwind CSS", "Storybook"],
-  Authentication: ["MSAL", "SSO", "LDAP", "JWT", "OAuth2"],
+  "UI & State": ["Redux Toolkit", "MUI", "Ant Design", "Tailwind CSS", "Storybook"],
+  "Auth & Security": ["MSAL", "SSO", "LDAP", "JWT", "OAuth2"],
+  Tools: ["Swagger", "Git", "JMeter", "Figma MCP", "GitHub Copilot"],
 }
 
 export const certifications = [
@@ -15,7 +15,7 @@ export const certifications = [
 ]
 
 export const languages = [
-  { name: "English", level: "Native" },
-  { name: "Tamil", level: "Native" },
+  { name: "English", level: "Expert" },
+  { name: "Tamil", level: "Expert" },
   { name: "Hindi", level: "Beginner" },
 ]
