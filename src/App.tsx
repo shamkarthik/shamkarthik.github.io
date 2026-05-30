@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
+import ScrollToTop from "./components/ScrollToTop"
 import ChatPopup from "./components/ChatPopup"
 import ParticleBackground from "./components/ParticleBackground"
 import Home from "./pages/Home"
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/contributions" element={<Contributions />} />
         </Routes>
       </main>
+      <ScrollToTop />
       <ChatPopup />
       <Footer />
     </div>
