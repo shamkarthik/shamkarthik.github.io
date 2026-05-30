@@ -47,6 +47,19 @@ body {
   background: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.7;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 0%, rgba(0, 212, 255, 0.03) 0%, transparent 40%);
+  pointer-events: none;
 }
 
 @layer utilities {

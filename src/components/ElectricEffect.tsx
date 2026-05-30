@@ -8,7 +8,7 @@ function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
 
 function boltPath(from: Point, to: Point, detail: number): Point[] {
   const pts: Point[] = [from]
-  const segs = 6 + Math.floor(Math.random() * 5)
+  const segs = 8 + Math.floor(Math.random() * 6)
   for (let i = 1; i < segs; i++) {
     const t = i / segs
     const x = lerp(from.x, to.x, t) + (Math.random() - 0.5) * detail
@@ -32,7 +32,7 @@ function makeBranches(main: Point[], detail: number): Point[][] {
     const nx = -dy / len, ny = dx / len
     const side = Math.random() > 0.5 ? 1 : -1
     const angle = Math.atan2(ny * side, nx * side) + (Math.random() - 0.5) * 1.2
-    const branchLen = 20 + Math.random() * 60
+    const branchLen = 30 + Math.random() * 80
     const end = {
       x: origin.x + Math.cos(angle) * branchLen,
       y: origin.y + Math.sin(angle) * branchLen,
@@ -45,7 +45,7 @@ function makeBranches(main: Point[], detail: number): Point[][] {
 function getCardPositions(w: number, h: number): Point[] {
   const pts: Point[] = []
   const cards = document.querySelectorAll<HTMLElement>(
-    '[class*="card"], [class*="Card"], section, [class*="service"], article'
+    '[class*="card"], [class*="Card"], section, [class*="service"], article, [class*="hero"], nav, footer, [class*="badge"]'
   )
   cards.forEach(el => {
     const rect = el.getBoundingClientRect()
@@ -57,8 +57,9 @@ function getCardPositions(w: number, h: number): Point[] {
     }
   })
   if (pts.length === 0) {
-    pts.push({ x: w * 0.3, y: h * 0.5 })
-    pts.push({ x: w * 0.7, y: h * 0.5 })
+    for (let i = 0; i < 6; i++) {
+      pts.push({ x: Math.random() * w, y: Math.random() * h })
+    }
   }
   return pts
 }
@@ -70,13 +71,13 @@ function hasWebGPU(): boolean {
 function emitSparks(sparks: Spark[], x: number, y: number, count: number) {
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2
-    const speed = 1 + Math.random() * 3
+    const speed = 1 + Math.random() * 4
     sparks.push({
       x, y,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed - 1,
       life: 0,
-      maxLife: 30 + Math.random() * 40,
+      maxLife: 40 + Math.random() * 60,
     })
   }
 }
@@ -105,7 +106,6 @@ function drawBolt(
   ctx.stroke()
 }
 
-/** Full canvas lightning effect (works everywhere — canvas 2D, not WebGPU) */
 function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseRef = useRef({ x: -999, y: -999, active: false })
@@ -142,7 +142,7 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
     const onClick = (e: MouseEvent) => {
       const cx = e.clientX, cy = e.clientY
       const angle = Math.random() * Math.PI * 2
-      const dist = 150 + Math.random() * 250
+      const dist = 150 + Math.random() * 350
       const target = {
         x: cx + Math.cos(angle) * dist,
         y: cy + Math.sin(angle) * dist,
@@ -154,59 +154,90 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         life: 0,
         maxLife: 1.0 + Math.random() * 0.5,
       })
-      emitSparks(sparksRef.current, cx, cy, 20)
+      emitSparks(sparksRef.current, cx, cy, 30)
     }
     window.addEventListener("click", onClick)
 
     let scrollY = 0
     const onScroll = () => {
       const sy = window.scrollY
-      if (sy - scrollY > 150) {
+      if (sy - scrollY > 100) {
         const origins = getCardPositions(w, h)
-        if (origins.length > 0) {
-          const origin = origins[Math.floor(Math.random() * origins.length)]
-          const angle = Math.random() * Math.PI * 2
-          const dist = 80 + Math.random() * 180
-          const target = {
-            x: origin.x + Math.cos(angle) * dist,
-            y: origin.y + Math.sin(angle) * dist,
+        for (let i = 0; i < 2; i++) {
+          if (origins.length > 0) {
+            const origin = origins[Math.floor(Math.random() * origins.length)]
+            const angle = Math.random() * Math.PI * 2
+            const dist = 100 + Math.random() * 250
+            const target = {
+              x: origin.x + Math.cos(angle) * dist,
+              y: origin.y + Math.sin(angle) * dist,
+            }
+            const main = boltPath(origin, target, 60 + Math.random() * 40)
+            boltsRef.current.push({
+              pts: main,
+              branches: makeBranches(main, 60),
+              life: 0,
+              maxLife: 0.9 + Math.random() * 0.4,
+            })
+            emitSparks(sparksRef.current, origin.x, origin.y, 12)
           }
-          const main = boltPath(origin, target, 60 + Math.random() * 40)
-          boltsRef.current.push({
-            pts: main,
-            branches: makeBranches(main, 60),
-            life: 0,
-            maxLife: 0.9 + Math.random() * 0.4,
-          })
-          emitSparks(sparksRef.current, origin.x, origin.y, 10)
         }
       }
       scrollY = sy
     }
     window.addEventListener("scroll", onScroll, { passive: true })
 
-    function spawnNaturalBolt() {
+    function spawnBolt() {
       const origins = getCardPositions(w, h)
       if (origins.length > 0) {
-        const origin = origins[Math.floor(Math.random() * origins.length)]
-        const angle = Math.random() * Math.PI * 2
-        const dist = 100 + Math.random() * 250
-        const target = {
-          x: origin.x + Math.cos(angle) * dist,
-          y: origin.y + Math.sin(angle) * dist,
+        const from = origins[Math.floor(Math.random() * origins.length)]
+        const isEdgeBolt = Math.random() > 0.5
+        let target: Point
+        if (isEdgeBolt) {
+          target = {
+            x: Math.random() * w,
+            y: Math.random() * h,
+          }
+        } else if (origins.length > 1) {
+          target = origins[Math.floor(Math.random() * origins.length)]
+        } else {
+          target = {
+            x: from.x + (Math.random() - 0.5) * 400,
+            y: from.y + (Math.random() - 0.5) * 400,
+          }
         }
-        const main = boltPath(origin, target, 80 + Math.random() * 50)
+        const main = boltPath(from, target, 80 + Math.random() * 60)
         boltsRef.current.push({
           pts: main,
           branches: makeBranches(main, 80),
           life: 0,
-          maxLife: 0.9 + Math.random() * 0.6,
+          maxLife: 0.8 + Math.random() * 0.7,
         })
-        emitSparks(sparksRef.current, origin.x, origin.y, 8)
+        emitSparks(sparksRef.current, from.x, from.y, 10)
       }
     }
 
+    function spawnEdgeSweep() {
+      const side = Math.floor(Math.random() * 4)
+      let from: Point, to: Point
+      const m = 50
+      switch (side) {
+        case 0: from = { x: -m, y: Math.random() * h }; to = { x: w + m, y: Math.random() * h }; break
+        case 1: from = { x: w + m, y: Math.random() * h }; to = { x: -m, y: Math.random() * h }; break
+        case 2: from = { x: Math.random() * w, y: -m }; to = { x: Math.random() * w, y: h + m }; break
+        default: from = { x: Math.random() * w, y: h + m }; to = { x: Math.random() * w, y: -m }; break
+      }
+      const main = boltPath(from, to, 40 + Math.random() * 30)
+      boltsRef.current.push({
+        pts: main,
+        branches: makeBranches(main, 40),
+        life: 0,
+        maxLife: 0.6 + Math.random() * 0.4,
+      })
+    }
+
     let boltTimer = 0
+    let sweepTimer = 0
     let cardRefreshTimer = 0
 
     function draw(t: number) {
@@ -216,33 +247,45 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
 
       ctx!.clearRect(0, 0, w, h)
 
-      // ambient glow at mouse
+      // strong ambient glow at mouse
       if (mouseRef.current.active) {
         const g = ctx!.createRadialGradient(
           mouseRef.current.x, mouseRef.current.y, 0,
-          mouseRef.current.x, mouseRef.current.y, 200,
+          mouseRef.current.x, mouseRef.current.y, 300,
         )
-        g.addColorStop(0, "rgba(0, 212, 255, 0.08)")
+        g.addColorStop(0, "rgba(0, 212, 255, 0.12)")
         g.addColorStop(1, "rgba(0, 212, 255, 0)")
         ctx!.fillStyle = g
         ctx!.fillRect(0, 0, w, h)
       }
 
-      // breathing ambient glow
-      const pulse = 0.5 + 0.5 * Math.sin(t / 2000)
-      ctx!.fillStyle = `rgba(0, 212, 255, ${0.012 * pulse})`
+      // breathing ambient glow — stronger
+      const pulse = 0.3 + 0.7 * Math.sin(t / 1800)
+      ctx!.fillStyle = `rgba(0, 212, 255, ${0.025 * pulse})`
       ctx!.fillRect(0, 0, w, h)
 
-      // natural bolts from content cards
+      // purple ambient
+      const pPulse = 0.3 + 0.7 * Math.sin(t / 2200 + 1)
+      ctx!.fillStyle = `rgba(139, 92, 246, ${0.015 * pPulse})`
+      ctx!.fillRect(0, 0, w, h)
+
+      // natural bolts from content cards — more frequent
       boltTimer += dt
-      if (boltTimer > 3 + Math.random() * 4) {
-        spawnNaturalBolt()
+      if (boltTimer > 1.5 + Math.random() * 2) {
+        spawnBolt()
         boltTimer = 0
+      }
+
+      // edge sweeps
+      sweepTimer += dt
+      if (sweepTimer > 2 + Math.random() * 3) {
+        spawnEdgeSweep()
+        sweepTimer = 0
       }
 
       // refresh card origins periodically
       cardRefreshTimer += dt
-      if (cardRefreshTimer > 2) {
+      if (cardRefreshTimer > 1.5) {
         cardOriginsRef.current = getCardPositions(w, h)
         cardRefreshTimer = 0
       }
@@ -264,13 +307,13 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         }
 
         if (progress < 0.3) {
-          emitSparks(sparksRef.current, b.pts[b.pts.length - 1].x, b.pts[b.pts.length - 1].y, 5)
+          emitSparks(sparksRef.current, b.pts[b.pts.length - 1].x, b.pts[b.pts.length - 1].y, 6)
         }
       }
 
-      // mouse sparks
-      if (mouseRef.current.active && Math.random() > 0.7) {
-        emitSparks(sparksRef.current, mouseRef.current.x, mouseRef.current.y, 3)
+      // mouse sparks — more frequent
+      if (mouseRef.current.active && Math.random() > 0.5) {
+        emitSparks(sparksRef.current, mouseRef.current.x, mouseRef.current.y, 4)
       }
 
       // draw sparks
@@ -294,6 +337,22 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
       ctx!.shadowBlur = 0
     }
 
+    // pre-seed a few bolts
+    for (let i = 0; i < 3; i++) {
+      const origins = getCardPositions(w, h)
+      if (origins.length > 0) {
+        const from = origins[Math.floor(Math.random() * origins.length)]
+        const to = { x: Math.random() * w, y: Math.random() * h }
+        const main = boltPath(from, to, 80)
+        boltsRef.current.push({
+          pts: main,
+          branches: makeBranches(main, 80),
+          life: Math.random() * 0.3,
+          maxLife: 0.8 + Math.random() * 0.5,
+        })
+      }
+    }
+
     animId = requestAnimationFrame(draw)
 
     return () => {
@@ -314,7 +373,6 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
   )
 }
 
-/** CSS-based fallback when WebGPU is not available */
 function CssFallback() {
   const linesRef = useRef<HTMLDivElement>(null)
 
@@ -326,7 +384,7 @@ function CssFallback() {
       if (!el) return
       const wrapper = document.createElement("div")
       const angle = Math.random() * Math.PI * 2
-      const len = 60 + Math.random() * 140
+      const len = 80 + Math.random() * 200
 
       wrapper.style.cssText = `
         position: fixed;
@@ -344,38 +402,63 @@ function CssFallback() {
         width: 100%;
         height: 100%;
         background: linear-gradient(90deg, rgba(0,212,255,0.95), transparent);
-        box-shadow: 0 0 15px rgba(0,212,255,0.6), 0 0 30px rgba(0,212,255,0.3);
+        box-shadow: 0 0 20px rgba(0,212,255,0.7), 0 0 40px rgba(0,212,255,0.3);
         border-radius: 2px;
-        animation: cssBoltInner 0.7s ease-out forwards;
+        animation: cssBoltInner 0.9s ease-out forwards;
       `
       wrapper.appendChild(inner)
       el.appendChild(wrapper)
-      setTimeout(() => wrapper.remove(), 600)
+      setTimeout(() => wrapper.remove(), 700)
+
+      // purple variant sometimes
+      if (Math.random() > 0.6) {
+        const w2 = document.createElement("div")
+        w2.style.cssText = wrapper.style.cssText
+        w2.style.transform = `rotate(${angle + 0.3}rad)`
+        const i2 = document.createElement("div")
+        i2.style.cssText = `
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, rgba(139,92,246,0.8), transparent);
+          box-shadow: 0 0 15px rgba(139,92,246,0.5), 0 0 30px rgba(139,92,246,0.2);
+          border-radius: 2px;
+          animation: cssBoltInner 0.7s ease-out forwards;
+        `
+        w2.appendChild(i2)
+        el.appendChild(w2)
+        setTimeout(() => w2.remove(), 600)
+      }
     }
 
     function randomCardSpawn() {
-      const rects = document.querySelectorAll<HTMLElement>('[class*="card"], section, article')
+      const rects = document.querySelectorAll<HTMLElement>('[class*="card"], section, article, [class*="hero"], nav, footer')
       if (rects.length === 0) return
       const r = rects[Math.floor(Math.random() * rects.length)].getBoundingClientRect()
       spawnLine(r.left + r.width * 0.5, r.top + r.height * 0.5)
+      // sometimes spawn from edge
+      if (Math.random() > 0.5) {
+        const edgeX = Math.random() * window.innerWidth
+        const edgeY = Math.random() * window.innerHeight
+        spawnLine(edgeX, edgeY)
+      }
     }
 
     const onClick = (e: MouseEvent) => {
-      for (let i = 0; i < 3; i++) {
-        setTimeout(() => spawnLine(e.clientX, e.clientY), i * 120)
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => spawnLine(e.clientX, e.clientY), i * 80)
       }
     }
 
     let scrollTimer: ReturnType<typeof setTimeout>
     const onScroll = () => {
       clearTimeout(scrollTimer)
-      scrollTimer = setTimeout(randomCardSpawn, 200)
+      scrollTimer = setTimeout(randomCardSpawn, 150)
     }
 
     window.addEventListener("click", onClick)
     window.addEventListener("scroll", onScroll, { passive: true })
 
-    const natTimer = setInterval(randomCardSpawn, 3000)
+    const natTimer = setInterval(randomCardSpawn, 2000)
 
     return () => {
       window.removeEventListener("click", onClick)
@@ -387,13 +470,14 @@ function CssFallback() {
   return (
     <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
       <div ref={linesRef} />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,212,255,0.03),transparent_60%)] animate-pulse" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,212,255,0.05),transparent_60%)] animate-pulse" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(139,92,246,0.03),transparent_50%)]" />
       <style>{`
         @keyframes cssBoltInner {
           0% { opacity: 1; transform: scaleX(0); }
-          20% { opacity: 1; transform: scaleX(1.2); }
-          40% { opacity: 0.6; transform: scaleX(1); }
-          100% { opacity: 0; transform: scaleX(0.8); }
+          15% { opacity: 1; transform: scaleX(1.3); }
+          35% { opacity: 0.6; transform: scaleX(1); }
+          100% { opacity: 0; transform: scaleX(0.6); }
         }
       `}</style>
     </div>
@@ -410,7 +494,7 @@ export default function ElectricEffect() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   if (webgpu === null) {
-    return <div className="fixed inset-0 -z-10 pointer-events-none" />
+    return <div className="fixed inset-0 -z-10 pointer-events-none bg-neon-blue/[0.02]" />
   }
 
   if (!webgpu) {
