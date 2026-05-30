@@ -21,16 +21,21 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <div className="hidden items-center gap-1 md:flex">
+          <div className="hidden items-center gap-1 rounded-full bg-hover/50 p-1 md:flex">
             {links.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
-                className={`rounded-lg px-4 py-2 text-sm transition-all duration-200 ${
-                  pathname === l.to ? "bg-neon-blue/10 text-neon-blue" : "text-secondary hover:bg-hover hover:text-primary"
+                className={`relative rounded-full px-4 py-1.5 text-sm transition-all duration-300 ${
+                  pathname === l.to
+                    ? "text-black"
+                    : "text-secondary hover:text-primary"
                 }`}
               >
-                {l.label}
+                {pathname === l.to && (
+                  <span className="absolute inset-0 rounded-full bg-neon-blue shadow-[0_0_20px_rgba(0,212,255,0.4)]" />
+                )}
+                <span className="relative z-10">{l.label}</span>
               </Link>
             ))}
           </div>
@@ -51,11 +56,14 @@ export default function Navbar() {
                 key={l.to}
                 to={l.to}
                 onClick={() => setOpen(false)}
-                className={`rounded-lg px-4 py-3 text-sm transition-all ${
-                  pathname === l.to ? "bg-neon-blue/10 text-neon-blue" : "text-secondary hover:bg-hover hover:text-primary"
+                className={`relative rounded-lg px-4 py-3 text-sm transition-all ${
+                  pathname === l.to ? "text-black" : "text-secondary hover:text-primary"
                 }`}
               >
-                {l.label}
+                {pathname === l.to && (
+                  <span className="absolute inset-0 rounded-lg bg-neon-blue shadow-[0_0_20px_rgba(0,212,255,0.4)]" />
+                )}
+                <span className="relative z-10">{l.label}</span>
               </Link>
             ))}
           </div>
