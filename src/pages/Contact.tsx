@@ -1,6 +1,21 @@
 import { motion } from "framer-motion"
+import { useRef } from "react"
 
 export default function Contact() {
+  const formRef = useRef<HTMLFormElement>(null)
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const form = e.currentTarget
+    const data = new FormData(form)
+    const name = data.get("name") as string
+    const email = data.get("email") as string
+    const subject = (data.get("subject") as string) || "Inquiry from your portfolio"
+    const message = data.get("message") as string
+
+    const body = `From: ${name} (${email})\n\n${message}`
+    window.location.href = `mailto:shamkarthik88@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  }
   return (
     <div className="pt-24">
       <section className="py-12">
@@ -17,11 +32,11 @@ export default function Contact() {
           </motion.div>
 
           <motion.form
+            ref={formRef}
+            onSubmit={handleSubmit}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            action="https://formsubmit.co/shamkarthik88@gmail.com"
-            method="POST"
             className="space-y-4"
           >
             <div className="grid gap-4 sm:grid-cols-2">
