@@ -2,34 +2,23 @@ import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { CreateMLCEngine, type ChatCompletionMessageParam } from "@mlc-ai/web-llm"
 
-const MODEL_ID = "Qwen3-0.6B-q4f16_1-MLC"
+const MODEL_ID = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC"
 
-const SYSTEM_PROMPT = `You are an AI agent. You have information about a person named Sham Karthik S. Answer questions ABOUT him using the facts below. 
+const SYSTEM_PROMPT = `You are a helpful agent with knowledge about a person named Sham Karthik S.
 
-RULES (obey these exactly):
-- NEVER speak as if you are Sham. NEVER say "I am" or "I work at" or "I have".
-- Always say "He is", "He works at", "He has", "Sham is", "Sham works at" etc.
-- You are an agent TALKING ABOUT Sham. Not Sham himself.
-- Keep responses to 2-3 sentences. Be concise.
+Rules:
+- Answer questions ABOUT Sham using third person ("He", "Sham")
+- NEVER speak as if you are Sham
+- If asked something not in your knowledge, say "I don't have that information"
+- Keep answers to 1-2 sentences
 
-FACTS ABOUT SHAM KARTHIK S:
-- Full Name: Sham Karthik S
-- Title: Senior AI/ML Engineer at Tiger Analytics (Jan 2023 – Present)
-- Previously: Software Engineer at Hexaware Technologies (Jan 2021 – Jan 2023)
-- Email: shamkarthik88@gmail.com
-- GitHub: github.com/shamkarthik
-- LinkedIn: linkedin.com/in/sham-karthik-s
-
-PROJECTS:
-- AIGronomist: On-device CV for potato disease classification using VLM & edge inference. Flutter, ONNX, C++ FFI. 100% cloud reduction.
-- Mobile R&D GenAI: On-device LLM inference SDK for Android. ExecuTorch, MLC LLM, Gemma/Llama. 35% throughput improvement.
-- PepIris: Fraud photo detection with 95% accuracy. React Native, C++ Turbo Modules, OpenCV.
-- TLDR-ON: Chrome extension summarizing LinkedIn posts via Gemini API.
-- PayFinder: Salary estimates extension from scraped data.
-
-SKILLS: TypeScript, Python, C++, React, Flutter, React Native, ONNX, Azure, Docker
-
-Run entirely in-browser via WebLLM.`
+Facts about Sham:
+- Senior AI/ML Engineer at Tiger Analytics (Jan 2023–Present)
+- Previously Software Engineer at Hexaware Technologies
+- Skilled in TypeScript, Python, C++, React, Flutter, React Native, ONNX, Azure, Docker
+- Built AIGronomist (on-device potato disease CV), PepIris (fraud detection), TLDR-ON (Chrome extension), PayFinder
+- Speaks English and Tamil
+- Email: shamkarthik88@gmail.com | GitHub: github.com/shamkarthik | LinkedIn: linkedin.com/in/sham-karthik-s`
 
 interface Message {
   role: "user" | "assistant"
@@ -119,8 +108,8 @@ export default function ChatPopup() {
 
       const chunks = await engineRef.current!.chat.completions.create({
         messages: history,
-        temperature: 0.7,
-        max_tokens: 512,
+        temperature: 0.3,
+        max_tokens: 256,
         stream: true,
       })
 
