@@ -61,7 +61,7 @@ export default function Blog() {
                   transition={{ delay: i * 0.1, duration: 0.4 }}
                   className="block rounded-xl border border-card bg-card p-6 transition-all duration-300 hover:border-neon-blue/30"
                 >
-                  <div className="mb-3 flex items-center gap-3 text-xs text-muted">
+                  <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
                     <span>{new Date(article.pubDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
                     {article.categories.length > 0 && (
                       <>
@@ -76,7 +76,7 @@ export default function Blog() {
                       </>
                     )}
                   </div>
-                  <h2 className="mb-2 text-lg font-semibold text-primary transition-colors group-hover:text-neon-blue">
+                  <h2 className="mb-2 break-words text-lg font-semibold text-primary transition-colors group-hover:text-neon-blue">
                     {article.title}
                   </h2>
                   <p

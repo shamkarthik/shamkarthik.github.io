@@ -16,7 +16,7 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-card bg-primary/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-3 py-3 sm:px-4">
-        <Link to="/" className="text-sm font-bold tracking-wide text-gradient sm:text-lg">
+        <Link to="/" className="shrink-0 text-sm font-bold tracking-wide text-gradient sm:text-lg whitespace-nowrap">
           SHAM KARTHIK S
         </Link>
 
