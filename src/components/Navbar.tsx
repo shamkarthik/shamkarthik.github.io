@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom"
 import { useState } from "react"
+import { motion } from "framer-motion"
 import ThemeToggle from "./ThemeToggle"
 
 const links = [
@@ -33,7 +34,11 @@ export default function Navbar() {
                 }`}
               >
                 {pathname === l.to && (
-                  <span className="absolute inset-0 rounded-full bg-gradient-to-b from-white/20 to-white/[0.07] backdrop-blur-xl border border-white/25 shadow-[0_2px_12px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.15)]" />
+                  <motion.span
+                    layoutId="active-pill"
+                    className="absolute inset-0 rounded-full bg-gradient-to-b from-white/20 to-white/[0.07] backdrop-blur-xl border border-white/25 shadow-[0_2px_12px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.15)]"
+                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                  />
                 )}
                 <span className="relative z-10">{l.label}</span>
               </Link>
