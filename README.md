@@ -14,7 +14,8 @@ Built with React 19 + Vite + Tailwind CSS v4.
 - **Vite 8** + TypeScript
 - **Tailwind CSS v4** + `@tailwindcss/vite` plugin
 - **Framer Motion** — page/section animations
-- **React Router** (HashRouter for GH Pages sub-path)
+- **React Router** (HashRouter)
+- **WebLLM** — on-device LLM inference via WebGPU
 - **FormSubmit.co** — free contact form backend
 
 ## Pages
@@ -23,18 +24,20 @@ Built with React 19 + Vite + Tailwind CSS v4.
 |-------|---------|
 | `/` | Hero, Experience Timeline, Open Source Projects, Skills, AIGronomist features |
 | `/blog` | Medium RSS feed via rss2json |
+| `/chat` | On-device AI chat (SmolLM2-360M via WebLLM, runs in-browser) |
 | `/contact` | Contact form + social links |
 | `/contributions` | GitHub stats, language chart, contribution graph, recent activity |
 
 ## Features
 
 - 🌓 Dark/Light theme toggle (persisted in localStorage)
+- 🤖 On-device AI chat via WebLLM (WebGPU, no server needed)
 - 📊 Animated stat counters (Years Exp, Projects Delivered)
 - 📈 Skill proficiency bars with animated fill
 - 📉 Language distribution bar chart
 - 🏷️ AIGronomist features (top 15, filterable by category)
 - 📱 Fully responsive (mobile-first)
-- 🎯 E2E tests via Playwright (12 tests)
+- 🎯 E2E tests via Playwright
 
 ## Getting Started
 
