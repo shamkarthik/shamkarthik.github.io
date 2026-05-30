@@ -31,7 +31,7 @@ export default function Hero() {
             <img
               src="/photo.png"
               alt="Sham Karthik S"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover object-[center_30%]"
             />
           </div>
         </motion.div>
