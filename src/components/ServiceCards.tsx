@@ -91,11 +91,13 @@ export default function ServiceCards() {
           transition={{ delay: 0.5, duration: 0.6 }}
           className="mt-12 text-center"
         >
-          <div className="inline-flex items-center gap-4 rounded-xl border border-neon-blue/20 bg-gradient-to-r from-neon-blue/5 via-transparent to-neon-purple/5 px-8 py-5 text-base shadow-[0_0_30px_rgba(0,212,255,0.08)] sm:text-lg">
-            <svg className="h-7 w-7 flex-shrink-0 text-neon-blue" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M13 2L4.093 12.687a.75.75 0 00.553 1.313H12l-1 8 8.907-10.687A.75.75 0 0019.354 10H12l1-8z"/>
-            </svg>
-            <span className="text-primary font-medium">
+          <div className="inline-flex items-center gap-4 rounded-xl border border-neon-blue/30 bg-gradient-to-r from-neon-blue/[0.08] via-neon-purple/[0.04] to-neon-blue/[0.08] px-8 py-5 text-base shadow-[0_0_40px_rgba(0,212,255,0.12)] sm:text-lg">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-neon-blue/10">
+              <svg className="h-5 w-5 text-neon-blue" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13 2L4.093 12.687a.75.75 0 00.553 1.313H12l-1 8 8.907-10.687A.75.75 0 0019.354 10H12l1-8z"/>
+              </svg>
+            </div>
+            <span className="text-white font-semibold">
               "Run, Barry. Run." — <span className="text-neon-blue font-bold">That's the energy I bring to every project.</span>
             </span>
           </div>

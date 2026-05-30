@@ -89,15 +89,15 @@ function drawBolt(
 ) {
   ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`
   ctx.lineWidth = glowW
-  ctx.shadowColor = "rgba(0, 212, 255, 0.35)"
-  ctx.shadowBlur = 12
+  ctx.shadowColor = "rgba(0, 212, 255, 0.5)"
+  ctx.shadowBlur = 18
   ctx.beginPath()
   ctx.moveTo(pts[0].x, pts[0].y)
   for (let j = 1; j < pts.length; j++) ctx.lineTo(pts[j].x, pts[j].y)
   ctx.stroke()
 
-  ctx.strokeStyle = `rgba(180, 240, 255, ${alpha * 0.8})`
-  ctx.lineWidth = 1
+  ctx.strokeStyle = `rgba(200, 240, 255, ${alpha * 0.9})`
+  ctx.lineWidth = 1.5
   ctx.shadowBlur = 0
   ctx.beginPath()
   ctx.moveTo(pts[0].x, pts[0].y)
@@ -152,9 +152,9 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         pts: main,
         branches: makeBranches(main, 100),
         life: 0,
-        maxLife: 0.8 + Math.random() * 0.4,
+        maxLife: 1.0 + Math.random() * 0.5,
       })
-      emitSparks(sparksRef.current, cx, cy, 12)
+      emitSparks(sparksRef.current, cx, cy, 20)
     }
     window.addEventListener("click", onClick)
 
@@ -176,9 +176,9 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
             pts: main,
             branches: makeBranches(main, 60),
             life: 0,
-            maxLife: 0.8 + Math.random() * 0.3,
+            maxLife: 0.9 + Math.random() * 0.4,
           })
-          emitSparks(sparksRef.current, origin.x, origin.y, 6)
+          emitSparks(sparksRef.current, origin.x, origin.y, 10)
         }
       }
       scrollY = sy
@@ -200,9 +200,9 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
           pts: main,
           branches: makeBranches(main, 80),
           life: 0,
-          maxLife: 0.7 + Math.random() * 0.3,
+          maxLife: 0.9 + Math.random() * 0.6,
         })
-        emitSparks(sparksRef.current, origin.x, origin.y, 4)
+        emitSparks(sparksRef.current, origin.x, origin.y, 8)
       }
     }
 
@@ -220,17 +220,17 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
       if (mouseRef.current.active) {
         const g = ctx!.createRadialGradient(
           mouseRef.current.x, mouseRef.current.y, 0,
-          mouseRef.current.x, mouseRef.current.y, 140,
+          mouseRef.current.x, mouseRef.current.y, 200,
         )
-        g.addColorStop(0, "rgba(0, 212, 255, 0.05)")
+        g.addColorStop(0, "rgba(0, 212, 255, 0.08)")
         g.addColorStop(1, "rgba(0, 212, 255, 0)")
         ctx!.fillStyle = g
         ctx!.fillRect(0, 0, w, h)
       }
 
       // breathing ambient glow
-      const pulse = 0.5 + 0.5 * Math.sin(t / 2500)
-      ctx!.fillStyle = `rgba(0, 212, 255, ${0.008 * pulse})`
+      const pulse = 0.5 + 0.5 * Math.sin(t / 2000)
+      ctx!.fillStyle = `rgba(0, 212, 255, ${0.012 * pulse})`
       ctx!.fillRect(0, 0, w, h)
 
       // natural bolts from content cards
@@ -255,8 +255,8 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         if (b.life >= b.maxLife) { bolts.splice(i, 1); continue }
 
         const progress = b.life / b.maxLife
-        const alpha = (1 - progress) * 0.7
-        const glowW = 1.5 + (1 - progress) * 3
+        const alpha = (1 - progress) * 0.85
+        const glowW = 2 + (1 - progress) * 5
 
         drawBolt(ctx!, b.pts, alpha, glowW)
         for (const branch of b.branches) {
@@ -269,8 +269,8 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
       }
 
       // mouse sparks
-      if (mouseRef.current.active && Math.random() > 0.85) {
-        emitSparks(sparksRef.current, mouseRef.current.x, mouseRef.current.y, 2)
+      if (mouseRef.current.active && Math.random() > 0.7) {
+        emitSparks(sparksRef.current, mouseRef.current.x, mouseRef.current.y, 3)
       }
 
       // draw sparks
@@ -283,12 +283,12 @@ function CanvasLightning({ onRef }: { onRef: (el: HTMLCanvasElement | null) => v
         s.y += s.vy
         s.vy += 0.05
         const lr = s.life / s.maxLife
-        const alpha = (1 - lr) * 0.8
+        const alpha = (1 - lr) * 0.9
         ctx!.fillStyle = `rgba(0, 212, 255, ${alpha})`
-        ctx!.shadowColor = "rgba(0, 212, 255, 0.5)"
-        ctx!.shadowBlur = 6
+        ctx!.shadowColor = "rgba(0, 212, 255, 0.7)"
+        ctx!.shadowBlur = 10
         ctx!.beginPath()
-        ctx!.arc(s.x, s.y, 0.8 * (1 - lr * 0.5), 0, Math.PI * 2)
+        ctx!.arc(s.x, s.y, 1.2 * (1 - lr * 0.5), 0, Math.PI * 2)
         ctx!.fill()
       }
       ctx!.shadowBlur = 0
@@ -333,7 +333,7 @@ function CssFallback() {
         left: ${x}px;
         top: ${y}px;
         width: ${len}px;
-        height: 2px;
+        height: 3px;
         transform-origin: left center;
         transform: rotate(${angle}rad);
         pointer-events: none;
@@ -343,10 +343,10 @@ function CssFallback() {
       inner.style.cssText = `
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, rgba(0,212,255,0.9), transparent);
-        box-shadow: 0 0 10px rgba(0,212,255,0.5), 0 0 20px rgba(0,212,255,0.2);
-        border-radius: 1px;
-        animation: cssBoltInner 0.5s ease-out forwards;
+        background: linear-gradient(90deg, rgba(0,212,255,0.95), transparent);
+        box-shadow: 0 0 15px rgba(0,212,255,0.6), 0 0 30px rgba(0,212,255,0.3);
+        border-radius: 2px;
+        animation: cssBoltInner 0.7s ease-out forwards;
       `
       wrapper.appendChild(inner)
       el.appendChild(wrapper)
@@ -362,20 +362,20 @@ function CssFallback() {
 
     const onClick = (e: MouseEvent) => {
       for (let i = 0; i < 3; i++) {
-        setTimeout(() => spawnLine(e.clientX, e.clientY), i * 80)
+        setTimeout(() => spawnLine(e.clientX, e.clientY), i * 120)
       }
     }
 
     let scrollTimer: ReturnType<typeof setTimeout>
     const onScroll = () => {
       clearTimeout(scrollTimer)
-      scrollTimer = setTimeout(randomCardSpawn, 300)
+      scrollTimer = setTimeout(randomCardSpawn, 200)
     }
 
     window.addEventListener("click", onClick)
     window.addEventListener("scroll", onScroll, { passive: true })
 
-    const natTimer = setInterval(randomCardSpawn, 4000)
+    const natTimer = setInterval(randomCardSpawn, 3000)
 
     return () => {
       window.removeEventListener("click", onClick)
@@ -390,10 +390,10 @@ function CssFallback() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,212,255,0.03),transparent_60%)] animate-pulse" />
       <style>{`
         @keyframes cssBoltInner {
-          0% { opacity: 0.9; transform: scaleX(0); }
-          15% { opacity: 1; transform: scaleX(1.1); }
-          30% { opacity: 0.5; transform: scaleX(1); }
-          100% { opacity: 0; transform: scaleX(1); }
+          0% { opacity: 1; transform: scaleX(0); }
+          20% { opacity: 1; transform: scaleX(1.2); }
+          40% { opacity: 0.6; transform: scaleX(1); }
+          100% { opacity: 0; transform: scaleX(0.8); }
         }
       `}</style>
     </div>
