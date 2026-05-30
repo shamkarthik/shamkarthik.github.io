@@ -99,6 +99,7 @@ export default function ChatPopup() {
         configRef.current = { max_tokens }
 
         await wllama.loadModelFromUrl(MODEL_URL, {
+          parallelDownloads: 5,
           n_batch: 128,
           n_ctx,
           progressCallback: (p) => {
