@@ -47,8 +47,7 @@ export default function Hero() {
         </h1>
 
         <p className="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-secondary sm:text-2xl">
-          Building on-device AI systems, computer vision pipelines, and cross-platform mobile experiences.
-          Specializing in edge inference, native modules, and production mobile apps.
+          On-device AI · Edge Inference · Cross-Platform Native
         </p>
 
         <div className="flex flex-wrap justify-center gap-3">
