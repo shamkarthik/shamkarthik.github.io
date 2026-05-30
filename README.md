@@ -4,7 +4,7 @@ Personal portfolio — Sham Karthik S · Senior AI/ML Engineer · Full-Stack Sof
 
 Built with React 19 + Vite + Tailwind CSS v4.
 
-**Live at [shamkarthik.github.io/portfolio](https://shamkarthik.github.io/portfolio)**
+**Live at [shamkarthik.github.io](https://shamkarthik.github.io)**
 
 ---
 
