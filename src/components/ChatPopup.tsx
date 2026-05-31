@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Wllama } from "@wllama/wllama"
+import { MarkdownMessage } from "./MarkdownMessage"
 
 const WLLAMA_CDN = "/wllama.wasm"
 
@@ -72,7 +73,7 @@ export default function ChatPopup() {
   const [progress, setProgress] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const wllamaRef = useRef<Wllama | null>(null)
   const configRef = useRef({ max_tokens: 4096 })
   const abortRef = useRef<AbortController | null>(null)
@@ -92,21 +93,19 @@ export default function ChatPopup() {
         const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent)
         const cores = navigator.hardwareConcurrency || 4
         const mem = (navigator as any).deviceMemory || (isMobile ? 4 : 8)
-        const highEnd = mem >= 8 && cores >= 6 && !isMobile
+        const highEnd = mem >= 8 && cores >= 4 && !isMobile
 
         const n_ctx = highEnd ? 8192 : 4096
-        const max_tokens = highEnd ? 4096 : 2048
+        const max_tokens = highEnd ? 512 : 256
         configRef.current = { max_tokens }
 
         await wllama.loadModelFromUrl(MODEL_URL, {
-          parallelDownloads: 5,
-          n_batch: 128,
+          n_batch: 256,
           n_ctx,
-          n_gpu_layers: 99,
           progressCallback: (p) => {
             if (!cancelled) {
               const pct = Math.round((p.loaded / p.total) * 100)
-              setProgress(`Downloading model... ${pct}%`)
+              setProgress(`Loading ${pct}%`)
             }
           },
         })
@@ -132,11 +131,22 @@ export default function ChatPopup() {
   }, [open])
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    const scrollToBottom = () => {
+      if (bottomRef.current) {
+        const parent = bottomRef.current.parentElement
+        parent?.scrollTo({ top: parent.scrollHeight, behavior: "smooth" })
+      }
+    }
+
+    if (state.phase === "generating") {
+      const interval = setInterval(scrollToBottom, 100)
+      return () => clearInterval(interval)
+    }
+    scrollToBottom()
+  }, [messages, state.phase])
 
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 300)
+    if (open && state.phase === "ready") inputRef.current?.focus()
   }, [open, state.phase])
 
   async function handleSend(e: React.FormEvent) {
@@ -297,17 +307,17 @@ export default function ChatPopup() {
                       key={i}
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.15 }}
+                      transition={{ duration: 0.1 }}
                       className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
+                        className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
                           m.role === "user"
                             ? "bg-neon-blue/20 text-primary"
                             : "bg-hover text-secondary"
                         }`}
                       >
-                        {m.content}
+                        <MarkdownMessage content={m.content} />
                       </div>
                     </motion.div>
                   ))}
@@ -317,15 +327,21 @@ export default function ChatPopup() {
             </div>
 
             {(state.phase === "ready" || state.phase === "generating") && (
-              <form onSubmit={handleSend} className="flex items-center gap-2 border-t border-card p-3">
-                <input
+              <form onSubmit={handleSend} className="flex items-end gap-2 border-t border-card p-3">
+                <textarea
                   ref={inputRef}
-                  type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask about Sham…"
                   disabled={state.phase === "generating"}
-                  className="flex-1 rounded-lg border border-card bg-hover px-3.5 py-2 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20 disabled:opacity-50"
+                  className="flex-1 resize-none rounded-lg border border-card bg-hover px-3.5 py-2 text-sm text-primary placeholder-muted outline-none transition-all focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/20 disabled:opacity-50"
+                  rows={1}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault()
+                      handleSend(e)
+                    }
+                  }}
                 />
                 {state.phase === "generating" ? (
                   <button
