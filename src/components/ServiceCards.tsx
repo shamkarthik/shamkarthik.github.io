@@ -97,7 +97,7 @@ export default function ServiceCards() {
                 <path d="M13 2L4.093 12.687a.75.75 0 00.553 1.313H12l-1 8 8.907-10.687A.75.75 0 0019.354 10H12l1-8z"/>
               </svg>
             </div>
-            <span className="text-white font-semibold">
+            <span className="text-primary font-semibold">
               "Run, Barry. Run." — <span className="text-neon-blue font-bold">That's the energy I bring to every project.</span>
             </span>
           </div>
