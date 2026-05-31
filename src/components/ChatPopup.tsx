@@ -69,6 +69,7 @@ const modelManager = new ModelManager()
 
 function createWllamaInstance() {
   const instance = new Wllama({ default: "/wllama.wasm" })
+  instance.setCompat(null)
   return instance
 }
 
