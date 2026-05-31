@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Wllama, ModelManager } from "@wllama/wllama"
+import type { WllamaLogger } from "@wllama/wllama"
+import wllamaWasm from "@wllama/wllama/src/wasm/wllama.wasm?url"
+import compatWasmUrl from "@wllama/wllama-compat/wasm/wllama.wasm?url"
+import compatWorkerCode from "@wllama/wllama-compat/wasm/wllama.js?raw"
 import { MarkdownMessage } from "./MarkdownMessage"
 
 const MODEL_URL = "https://huggingface.co/LiquidAI/LFM2-700M-GGUF/resolve/main/LFM2-700M-Q4_K_M.gguf"
@@ -62,32 +66,25 @@ type PopupState =
   | { phase: "downloading"; progress: string }
   | { phase: "loading" }
   | { phase: "error"; message: string }
-  | { phase: "ready" }
-  | { phase: "generating" }
+  | { phase: "ready"; numThreads?: number }
+  | { phase: "generating"; numThreads?: number }
 
 const modelManager = new ModelManager()
 
-let compatLoaded = false
-async function ensureCompat() {
-  if (compatLoaded) return
-  try {
-    const res = await fetch("/wllama.js")
-    const workerCode = await res.text()
-    wllamaInstance.setCompat({ wasm: "/wllama-compat.wasm", worker: { code: workerCode } })
-    compatLoaded = true
-  } catch {
-    wllamaInstance.setCompat("default")
-    compatLoaded = true
-  }
+const DebugLogger: WllamaLogger = {
+  debug: (...args: any[]) => console.debug("[wllama]", ...args),
+  log: (...args: any[]) => console.log("[wllama]", ...args),
+  warn: (...args: any[]) => console.warn("[wllama]", ...args),
+  error: (...args: any[]) => console.error("[wllama]", ...args),
 }
 
 function createWllamaInstance() {
-  const instance = new Wllama({ default: "/wllama.wasm" })
+  const instance = new Wllama({ default: wllamaWasm }, { logger: DebugLogger })
+  instance.setCompat({ wasm: compatWasmUrl, worker: { code: compatWorkerCode } })
   return instance
 }
 
 let wllamaInstance = createWllamaInstance()
-ensureCompat()
 
 export default function ChatPopup() {
   const [open, setOpen] = useState(false)
@@ -113,8 +110,6 @@ export default function ChatPopup() {
 
     const load = async () => {
       try {
-        await ensureCompat()
-
         if (!cancelled) {
           setState({ phase: "downloading", progress: "Checking cache…" })
         }
@@ -140,6 +135,10 @@ export default function ChatPopup() {
         })
 
         if (!cancelled) {
+          const numThreads = wllamaInstance.getNumThreads()
+          const isMulti = wllamaInstance.isMultithread()
+          DebugLogger.log(`Model loaded — threads: ${numThreads}, multi-thread: ${isMulti}`)
+
           const initMsg: Message[] = [
             {
               role: "assistant",
@@ -148,7 +147,7 @@ export default function ChatPopup() {
           ]
           messagesRef.current = initMsg
           setMessages(initMsg)
-          setState({ phase: "ready" })
+          setState({ phase: "ready", numThreads })
         }
       } catch (err: unknown) {
         if (cancelled) return
@@ -193,7 +192,7 @@ export default function ChatPopup() {
 
     const abortController = new AbortController()
     abortRef.current = abortController
-    setState({ phase: "generating" })
+    setState((prev) => ({ phase: "generating" as const, numThreads: "numThreads" in prev ? prev.numThreads : undefined }))
 
     try {
       const history = [
@@ -231,14 +230,14 @@ export default function ChatPopup() {
       setMessages(updated)
     } finally {
       abortRef.current = null
-      setState((prev) => (prev.phase === "generating" ? { phase: "ready" } : prev))
+      setState((prev) => (prev.phase === "generating" ? { phase: "ready", numThreads: prev.numThreads } : prev))
     }
   }, [input, state.phase])
 
   const handleStop = useCallback(() => {
     abortRef.current?.abort()
     abortRef.current = null
-    setState({ phase: "ready" })
+    setState((prev) => ({ phase: "ready", numThreads: prev.phase === "generating" ? prev.numThreads : undefined }))
   }, [])
 
   const handleReset = useCallback(() => {
@@ -291,7 +290,9 @@ export default function ChatPopup() {
                 <p className="text-[10px] text-muted">
                   {state.phase === "downloading" ? state.progress :
                    state.phase === "loading" ? "Initializing…" :
-                   state.phase === "error" ? "Offline" : "On-device · Ready"}
+                   state.phase === "error" ? "Offline" :
+                   state.phase === "generating" ? `Generating · ${state.numThreads ?? "?"}t` :
+                   state.phase === "ready" && state.numThreads ? `On-device · ${state.numThreads}t · Ready` : "On-device · Ready"}
                 </p>
               </div>
             </div>
