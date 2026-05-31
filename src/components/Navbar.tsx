@@ -15,7 +15,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-card bg-gradient-to-b from-white/[0.07] to-white/[0.02] backdrop-blur-2xl">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-card bg-card">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-3 py-3 sm:px-4">
         <Link to="/" className="shrink-0 text-sm font-bold tracking-wide text-gradient sm:text-lg whitespace-nowrap">
           SHAM KARTHIK S
@@ -36,7 +36,7 @@ export default function Navbar() {
                 {pathname === l.to && (
                   <motion.span
                     layoutId="active-pill"
-                    className="absolute inset-0 rounded-full bg-gradient-to-b from-white/20 to-white/[0.07] backdrop-blur-xl border border-white/25 shadow-[0_2px_12px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.15)]"
+                    className="absolute inset-0 rounded-full bg-card border border-card"
                     transition={{ type: "spring", stiffness: 400, damping: 35 }}
                   />
                 )}
@@ -54,7 +54,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-card bg-white/[0.04] backdrop-blur-2xl md:hidden">
+        <div className="border-t border-card bg-card md:hidden">
           <div className="flex flex-col gap-1 px-4 py-3">
             {links.map((l) => (
               <Link
@@ -66,7 +66,7 @@ export default function Navbar() {
                 }`}
               >
                 {pathname === l.to && (
-                  <span className="absolute inset-0 rounded-lg bg-gradient-to-b from-white/20 to-white/[0.07] backdrop-blur-xl border border-white/25 shadow-[0_2px_12px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.15)]" />
+                  <span className="absolute inset-0 rounded-lg bg-card border border-card" />
                 )}
                 <span className="relative z-10">{l.label}</span>
               </Link>

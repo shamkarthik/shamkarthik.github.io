@@ -3,7 +3,6 @@ import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import ScrollToTop from "./components/ScrollToTop"
 import ChatPopup from "./components/ChatPopup"
-import ElectricEffect from "./components/ElectricEffect"
 import Home from "./pages/Home"
 import Blog from "./pages/Blog"
 import Contact from "./pages/Contact"
@@ -12,7 +11,6 @@ import Contributions from "./pages/Contributions"
 export default function App() {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <ElectricEffect />
       <Navbar />
       <main>
         <Routes>

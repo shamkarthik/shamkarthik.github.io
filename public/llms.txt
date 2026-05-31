@@ -62,12 +62,12 @@ This is a single-page React app (Vite + Tailwind CSS v4 + Framer Motion) deploye
 - Tailwind CSS v4 (utility-first CSS)
 - Framer Motion (animations)
 - React Router (client-side routing)
-- Canvas API (ElectricEffect lightning animation)
+- Canvas API (background effects)
 - RSS-to-JSON (Medium feed integration)
 
 ## Features
 
-- **Electric lightning effect** — Canvas-based branched lightning bolts that animate from interactive page elements. Falls back to CSS glow animation if WebGPU is unavailable.
+- **Background effects** — Subtle visual enhancements using Canvas API
 - **Dark/Light theme** — Full theme support via `data-theme` attribute on `<html>`.
 - **AI Chat** — WebLLM-powered local AI chat (GPT-2/Phi-3) running entirely in the browser via WebGPU. No server, no API key needed. Sham's personal AI agent with full knowledge of his background.
 - **Animated counters** — Impact metrics animate on scroll.

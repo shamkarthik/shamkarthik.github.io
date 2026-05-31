@@ -239,7 +239,7 @@ export default function ChatPopup() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-50 flex w-[360px] flex-col rounded-2xl border border-card bg-primary shadow-2xl backdrop-blur-xl sm:w-[400px]"
+            className="fixed bottom-24 right-6 z-50 flex w-[360px] flex-col rounded-2xl border border-card bg-card shadow-lg sm:w-[400px]"
             style={{ maxHeight: "min(600px, calc(100vh - 140px))" }}
           >
             <div className="flex items-center justify-between rounded-t-2xl border-b border-card px-4 py-3">
