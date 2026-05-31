@@ -67,13 +67,27 @@ type PopupState =
 
 const modelManager = new ModelManager()
 
+let compatLoaded = false
+async function ensureCompat() {
+  if (compatLoaded) return
+  try {
+    const res = await fetch("/wllama.js")
+    const workerCode = await res.text()
+    wllamaInstance.setCompat({ wasm: "/wllama.wasm", worker: { code: workerCode } })
+    compatLoaded = true
+  } catch {
+    wllamaInstance.setCompat("default")
+    compatLoaded = true
+  }
+}
+
 function createWllamaInstance() {
   const instance = new Wllama({ default: "/wllama.wasm" })
-  instance.setCompat(null)
   return instance
 }
 
 let wllamaInstance = createWllamaInstance()
+ensureCompat()
 
 export default function ChatPopup() {
   const [open, setOpen] = useState(false)
@@ -99,6 +113,8 @@ export default function ChatPopup() {
 
     const load = async () => {
       try {
+        await ensureCompat()
+
         if (!cancelled) {
           setState({ phase: "downloading", progress: "Checking cache…" })
         }
