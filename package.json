@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "postinstall": "node -e \"const fs=require('fs');fs.copyFileSync('node_modules/@wllama/wllama-compat/wasm/wllama.wasm','public/wllama.wasm');fs.copyFileSync('node_modules/@wllama/wllama-compat/wasm/wllama.js','public/wllama.js')\""
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
@@ -25,6 +26,7 @@
   "dependencies": {
     "@vitejs/plugin-react": "^6.0.2",
     "@wllama/wllama": "^3.4.0",
+    "@wllama/wllama-compat": "^3.4.1",
     "framer-motion": "^12.40.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
