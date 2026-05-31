@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "postinstall": "node -e \"const fs=require('fs');fs.copyFileSync('node_modules/@wllama/wllama/src/wasm/wllama.wasm','public/wllama.wasm')\""
+    "postinstall": "node -e \"const fs=require('fs');fs.copyFileSync('node_modules/@wllama/wllama/src/wasm/wllama.wasm','public/wllama.wasm');fs.copyFileSync('node_modules/@wllama/wllama-compat/wasm/wllama.wasm','public/wllama-compat.wasm');fs.copyFileSync('node_modules/@wllama/wllama-compat/wasm/wllama.js','public/wllama.js')\""
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

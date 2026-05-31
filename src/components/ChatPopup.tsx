@@ -73,7 +73,7 @@ async function ensureCompat() {
   try {
     const res = await fetch("/wllama.js")
     const workerCode = await res.text()
-    wllamaInstance.setCompat({ wasm: "/wllama.wasm", worker: { code: workerCode } })
+    wllamaInstance.setCompat({ wasm: "/wllama-compat.wasm", worker: { code: workerCode } })
     compatLoaded = true
   } catch {
     wllamaInstance.setCompat("default")
